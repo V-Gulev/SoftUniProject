@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="">
+<head th:replace="~{fragments/_header :: head}"></head>
+<body>
+<header th:replace="~{fragments/_header :: header}"></header>
+<main class="container" sec:authorize="isAnonymous()">
+    <section class="card hero slide-up">
+        <div>
+            <h1 class="title">Level up your fitness journey</h1>
+            <p class="subtitle">Create goals, track workouts, and stay motivated with gentle insights and badges.</p>
+            <div class="stagger">
+                <a th:href="@{/register}" class="btn btn-primary">Get Started</a>
+                <a th:href="@{/login}" class="btn btn-outline" style="margin-left: .5rem;">I already have an account</a>
+            </div>
+        </div>
+        <div class="hero-illustration" aria-hidden="true">
+            <img th:src="url('@{/images/fittrack-app-illustration.png}')"
+                 alt="FitTrack app illustration"
+                 style="width: 100%; height: 100%; object-fit: cover; border-radius: 0.5rem;">
+        </div>
+    </section>
+
+    <section class="card slide-up">
+        <h2>Why FitTrack?</h2>
+        <div class="list-cards" style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));">
+            <div class="goal-card"><h3>Track Goals</h3><p class="meta">Stay focused with clear targets</p></div>
+            <div class="goal-card"><h3>Smart Plans</h3><p class="meta">Build routines that fit you</p></div>
+            <div class="goal-card"><h3>Progress</h3><p class="meta">See improvements over time</p></div>
+        </div>
+    </section>
+
+    <section class="card slide-up">
+        <h2>Ready to begin?</h2>
+        <a th:href="@{/register}" class="btn btn-primary">Create your account</a>
+        <a th:href="@{/login}" class="btn btn-outline" style="margin-left:.5rem;">Sign in</a>
+    </section>
+</main>
+</body>
+</html>
