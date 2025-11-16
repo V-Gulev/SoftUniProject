@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/_header :: head}"></head>
+<body>
+<header th:replace="~{fragments/_header :: header}"></header>
+<main class="container">
+    <h1>Something Went Wrong</h1>
+    <p>An unexpected error occurred. Please try again later.</p>
+    <p th:if="${errorMessage}" th:text="${errorMessage}"></p>
+    <a th:href="@{/dashboard}">Go to Dashboard</a>
+</main>
+</body>
+</html>

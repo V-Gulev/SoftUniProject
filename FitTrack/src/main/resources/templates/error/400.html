@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/_header :: head}"></head>
+<body>
+<header th:replace="~{fragments/_header :: header}"></header>
+<main class="container">
+    <div class="card slide-up" style="max-width: 600px; margin: 2rem auto; text-align: center;">
+        <h1 style="color: #ef4444; font-size: 3rem; margin-bottom: 1rem;">400</h1>
+        <h2 style="color: #ffffff; margin-bottom: 1rem;">Bad Request</h2>
+        <p style="color: var(--text-muted); margin-bottom: 1.5rem;">The request you sent was invalid or malformed.</p>
+        <p th:if="${errorMessage}" class="alert alert-error" style="margin-bottom: 1.5rem; text-align: left;" th:text="${errorMessage}"></p>
+        <a th:href="@{/dashboard}" class="btn btn-primary">Go to Dashboard</a>
+    </div>
+</main>
+</body>
+</html>
+

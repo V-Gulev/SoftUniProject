@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/_header :: head}"></head>
+<body>
+<header th:replace="~{fragments/_header :: header}"></header>
+<main class="container">
+    <div class="card slide-up">
+        <h1 style="color: #ffffff; font-size: 2rem; text-align: center;">Account Blocked</h1>
+        <p style="color: var(--text-muted); font-size: 1rem; text-align: center;">
+            Your account has been blocked by an administrator.
+        </p>
+        <p style="color: var(--text-muted); font-size: 1rem; text-align: center;">
+            Please contact support for further assistance.
+        </p>
+        <div style="text-align: center; margin-top: 2rem;">
+            <a th:href="@{/}" class="btn btn-primary">Go to Homepage</a>
+        </div>
+    </div>
+</main>
+</body>
+</html>
