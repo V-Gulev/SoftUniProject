@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/_header :: head}"></head>
+<body>
+<header th:replace="~{fragments/_header :: header}"></header>
+
+<main class="container">
+
+    <!-- --- FIX: Added Success/Error Messages --- -->
+    <div th:if="${successMessage}" class="alert-success" style="background: #10b981; color: #064e3b; padding: 1rem; border-radius: 0.5rem; margin: 1rem auto; max-width: 600px; border: 1px solid #059669;">
+        <span th:text="${successMessage}">Success!</span>
+    </div>
+    <div th:if="${errorMessage}" class="alert-danger" style="background: #ef4444; color: #7f1d1d; padding: 1rem; border-radius: 0.5rem; margin: 1rem auto; max-width: 600px; border: 1px solid #dc2626;">
+        <span th:text="${errorMessage}">Error!</span>
+    </div>
+    <!-- --- End Messages --- -->
+
+
+    <div class="card slide-up" style="max-width: 600px; margin: 2rem auto; background: #0f172a; border-radius: 1rem; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); border: 1px solid #334155;">
+        <div style="text-align: center; margin-bottom: 2rem; padding: 1.5rem; background: rgba(30, 41, 59, 0.5); border-radius: 1rem 1rem 0 0; color: white; border-bottom: 1px solid #334155;">
+            <h1 style="margin: 0; font-size: 2rem; font-weight: 600;">🏋️ Log a Workout</h1>
+            <p style="margin: 0.5rem 0 0 0; opacity: 0.8; font-size: 1.1rem; color: #cbd5e1;">Track your fitness progress</p>
+        </div>
+
+        <form th:action="@{/logs/add}" th:method="post" th:object="${logDto}" style="padding: 0 2rem 2rem 2rem;">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+
+            <div style="margin-bottom: 1.5rem;">
+                <label for="date" style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: #cbd5e1; font-size: 1rem;">📅 Workout Date</label>
+                <input type="date" id="date" th:field="*{date}" th:value="${#temporals.format(#temporals.createNow(), 'yyyy-MM-dd')}"
+                       style="width: 100%; padding: 0.75rem; border: 2px solid #334155; border-radius: 8px; font-size: 1rem; background: #1e293b; color: #cbd5e1; box-sizing: border-box;" />
+                <p class="alert-danger" th:if="${#fields.hasErrors('date')}" th:errors="*{date}" style="margin-top: 0.5rem;"></p>
+            </div>
+
+            <div style="margin-bottom: 1.5rem;">
+                <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: #cbd5e1; font-size: 1rem;">⏱️ Workout Duration</label>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <div>
+                        <label for="hours" style="display: block; margin-bottom: 0.25rem; font-size: 0.9rem; color: #94a3b8;">Hours</label>
+                        <input type="number" id="hours" th:field="*{hours}" min="0" max="12" placeholder="1"
+                               style="width: 100%; padding: 0.75rem; border: 2px solid #334155; border-radius: 8px; font-size: 1rem; background: #1e293b; color: #cbd5e1; box-sizing: border-box;" />
+                    </div>
+                    <div>
+                        <label for="minutes" style="display: block; margin-bottom: 0.25rem; font-size: 0.9rem; color: #94a3b8;">Minutes</label>
+                        <input type="number" id="minutes" th:field="*{minutes}" min="0" max="59" placeholder="30"
+                               style="width: 100%; padding: 0.75rem; border: 2px solid #334155; border-radius: 8px; font-size: 1rem; background: #1e293b; color: #cbd5e1; box-sizing: border-box;" />
+                    </div>
+                </div>
+                <p class="alert-danger" th:if="${#fields.hasErrors('hours')}" th:errors="*{hours}" style="margin-top: 0.5rem;"></p>
+                <p class="alert-danger" th:if="${#fields.hasErrors('minutes')}" th:errors="*{minutes}" style="margin-top: 0.5rem;"></p>
+            </div>
+
+            <div style="margin-bottom: 1.5rem;">
+                <label for="description" style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: #cbd5e1; font-size: 1rem;">📝 Workout Description</label>
+                <textarea id="description" th:field="*{description}" placeholder="Describe your workout..."
+                          style="width: 100%; padding: 0.75rem; border: 2px solid #334155; border-radius: 8px; font-size: 1rem; min-height: 100px; resize: vertical; background: #1e293b; color: #cbd5e1; box-sizing: border-box;"></textarea>
+                <p class="alert-danger" th:if="${#fields.hasErrors('description')}" th:errors="*{description}" style="margin-top: 0.5rem;"></p>
+            </div>
+
+            <div style="margin-bottom: 2rem;">
+                <label for="workoutPlanId" style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: #cbd5e1; font-size: 1rem;">📋 Workout Plan (Optional)</label>
+                <select id="workoutPlanId" th:field="*{workoutPlanId}"
+                        style="width: 100%; padding: 0.75rem; border: 2px solid #334155; border-radius: 8px; font-size: 1rem; background: #1e293b; color: #cbd5e1; box-sizing: border-box;">
+                    <option value="">Select a workout plan (optional)</option>
+                    <option th:each="plan : ${workoutPlans}" th:value="${plan.id}" th:text="${plan.name}">Plan Name</option>
+                </select>
+                <p class="alert-danger" th:if="${#fields.hasErrors('workoutPlanId')}" th:errors="*{workoutPlanId}" style="margin-top: 0.5rem;"></p>
+            </div>
+
+            <div style="margin-top: 2rem; display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center;">
+                <button type="submit" class="btn btn-primary" style="background: #10b981; color: #064e3b; font-weight: 600; padding: 0.875rem 2rem; border-radius: 8px; font-size: 1.1rem; min-width: 140px; border: none; cursor: pointer;">💪 Log Workout</button>
+                <a th:href="@{/dashboard}" class="btn btn-outline" style="padding: 0.875rem 2rem; font-weight: 600; border-radius: 8px; font-size: 1.1rem; min-width: 140px;">← Back</a>
+            </div>
+        </form>
+    </div>
+</main>
+</body>
+</html>

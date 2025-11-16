@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/_header :: head}"></head>
+<body>
+<header th:replace="~{fragments/_header :: header}"></header>
+
+<main class="container">
+    <div class="card slide-up">
+        <h1>Welcome back</h1>
+
+        <div th:if="${registrationSuccess}" class="alert alert-success" th:text="${registrationSuccess}"></div>
+        <div th:if="${errorMessage != null}" class="alert alert-error" th:text="${errorMessage}"></div>
+        <div th:if="${param.error != null and (errorMessage == null or errorMessage == '')}" class="alert alert-error">
+            Invalid username or password.
+        </div>
+        <div th:if="${successMessage != null}" class="alert alert-success" th:text="${successMessage}"></div>
+
+        <form th:action="@{/login}" method="post">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+            <div>
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" placeholder="Your username">
+            </div>
+            <div>
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" placeholder="••••••••">
+            </div>
+            <div style="display: flex; gap: 0.5rem;">
+                <button type="submit" class="btn btn-primary">Sign in</button>
+                <a th:href="@{/register}" class="btn btn-outline" style="margin-left: .5rem;">Create account</a>
+            </div>
+        </form>
+    </div>
+</main>
+</body>
+</html>
