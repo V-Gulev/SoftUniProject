@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/_header :: head}"></head>
+<body>
+<header th:replace="~{fragments/_header :: header}"></header>
+<main class="container">
+    <div class="stagger" style="margin-bottom: 1rem;">
+        <h1>My Workout Plans</h1>
+        <a th:href="@{/workout-plans/add}" class="btn btn-primary" style="background: #10b981; color: #064e3b; font-weight: 600; text-decoration: none; margin-bottom: 1rem;">+ Create Plan</a>
+    </div>
+
+    <!-- Awarded Badge Notification -->
+    <div th:if="${awardedBadge}" style="background: #2563eb; color: #ffffff; padding: 1.5rem; border-radius: 0.75rem; margin-bottom: 1.5rem; border: 1px solid #1d4ed8; text-align: center;">
+        <h2 style="font-size: 1.5rem; font-weight: 700; margin: 0 0 0.5rem 0;">🎉 New Badge Unlocked! 🎉</h2>
+        <div style="display: flex; align-items: center; justify-content: center; gap: 1rem;">
+            <img th:src="${awardedBadge.iconUrl}" th:alt="${awardedBadge.name}" style="width: 50px; height: 50px;"/>
+            <p style="margin: 0; font-size: 1.25rem;" th:text="${awardedBadge.name}"></p>
+        </div>
+    </div>
+
+    <!-- Success/Error Messages -->
+    <div th:if="${successMessage}" class="alert alert-success"
+         style="background: #10b981; color: #064e3b; padding: 1rem; border-radius: 0.5rem; margin-bottom: 1rem; border: 1px solid #059669;">
+        <span th:text="${successMessage}">Success message</span>
+    </div>
+    <div th:if="${errorMessage}" class="alert alert-danger"
+         style="background: #ef4444; color: #7f1d1d; padding: 1rem; border-radius: 0.5rem; margin-bottom: 1rem; border: 1px solid #dc2626;">
+        <span th:text="${errorMessage}">Error message</span>
+    </div>
+
+    <!-- Empty State -->
+    <div th:if="${activePlan == null and #lists.isEmpty(inactivePlans)}" style="background: #0f172a; border-radius: 1rem; padding: 3rem; text-align: center; border: 1px solid #334155;">
+        <h2 style="color: #ffffff; font-size: 1.5rem; margin: 0 0 1rem 0;">No Workout Plans Created Yet</h2>
+        <p style="color: #94a3b8; font-size: 1rem; margin: 0 0 1.5rem 0;">Get organized by creating your first workout plan!</p>
+        <a th:href="@{/workout-plans/add}" class="btn btn-primary" style="background: #10b981; color: #064e3b; font-weight: 600; text-decoration: none;">+ Create a Plan</a>
+    </div>
+
+    <!-- Active Plan Section -->
+    <div th:if="${activePlan != null}" style="max-width: 4xl; width: 100%; margin-bottom: 2rem;">
+        <div style="background: #0f172a; border-radius: 1rem; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); overflow: hidden; border: 1px solid #334155;">
+
+            <!-- Card Header -->
+            <div style="display: flex; flex-direction: column; justify-content: space-between; align-items: flex-start; gap: 1rem; padding: 1.5rem 2rem; background: rgba(30, 41, 59, 0.5); border-bottom: 1px solid #334155;">
+                <div style="display: flex; flex-direction: row; justify-content: space-between; align-items: center; width: 100%;">
+                    <div>
+                        <h2 style="font-size: 1.5rem; font-weight: 700; color: #ffffff; display: flex; align-items: center; gap: 0.75rem; margin: 0;">
+                            <span>⭐</span>
+                            <span th:text="${activePlan.name}">Plan Name</span>
+                        </h2>
+                        <p style="color: #94a3b8; margin: 0.25rem 0 0 0; font-size: 0.875rem;">Your current workout
+                            plan</p>
+                    </div>
+                    <span style="background: #10b981; color: #064e3b; padding: 0.375rem 1rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;">
+                        Active
+                    </span>
+                </div>
+            </div>
+
+            <!-- Card Body -->
+            <div style="padding: 1.5rem 2rem;">
+
+                <!-- Description -->
+                <div style="margin-bottom: 2rem;">
+                    <p style="color: #cbd5e1; font-size: 1.125rem; line-height: 1.75; background: #1e293b; padding: 1.5rem; border-radius: 0.5rem; border-left: 4px solid #10b981; margin: 0;"
+                       th:text="${activePlan.description}">Description</p>
+                </div>
+
+                <!-- Weekly Schedule -->
+                <div style="margin-bottom: 2rem;">
+                    <h3 style="font-size: 1.25rem; font-weight: 700; color: #ffffff; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.75rem;">
+                        <span>📅</span>
+                        Weekly Schedule
+                    </h3>
+
+                    <!-- Day Grid -->
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem;">
+
+                        <!-- Day Card: Monday -->
+                        <div style="background: #1e293b; padding: 1.25rem; border-radius: 0.5rem; border: 1px solid #334155; transition: all 0.3s ease; transform: translateY(0);"
+                             onmouseover="this.style.borderColor='#10b981'; this.style.backgroundColor='rgba(30, 41, 59, 0.5)'; this.style.transform='translateY(-4px)'"
+                             onmouseout="this.style.borderColor='#334155'; this.style.backgroundColor='#1e293b'; this.style.transform='translateY(0)'">
+                            <strong style="color: #34d399; font-weight: 700; font-size: 1.125rem;">Monday</strong>
+                            <p style="color: #cbd5e1; margin-top: 0.5rem; font-size: 0.875rem;"
+                               th:text="${activePlan.descriptionMonday}">-</p>
+                        </div>
+
+                        <!-- Day Card: Tuesday -->
+                        <div style="background: #1e293b; padding: 1.25rem; border-radius: 0.5rem; border: 1px solid #334155; transition: all 0.3s ease; transform: translateY(0);"
+                             onmouseover="this.style.borderColor='#10b981'; this.style.backgroundColor='rgba(30, 41, 59, 0.5)'; this.style.transform='translateY(-4px)'"
+                             onmouseout="this.style.borderColor='#334155'; this.style.backgroundColor='#1e293b'; this.style.transform='translateY(0)'">
+                            <strong style="color: #34d399; font-weight: 700; font-size: 1.125rem;">Tuesday</strong>
+                            <p style="color: #cbd5e1; margin-top: 0.5rem; font-size: 0.875rem;"
+                               th:text="${activePlan.descriptionTuesday}">-</p>
+                        </div>
+
+                        <!-- Day Card: Wednesday -->
+                        <div style="background: #1e293b; padding: 1.25rem; border-radius: 0.5rem; border: 1px solid #334155; transition: all 0.3s ease; transform: translateY(0);"
+                             onmouseover="this.style.borderColor='#10b981'; this.style.backgroundColor='rgba(30, 41, 59, 0.5)'; this.style.transform='translateY(-4px)'"
+                             onmouseout="this.style.borderColor='#334155'; this.style.backgroundColor='#1e293b'; this.style.transform='translateY(0)'">
+                            <strong style="color: #34d399; font-weight: 700; font-size: 1.125rem;">Wednesday</strong>
+                            <p style="color: #cbd5e1; margin-top: 0.5rem; font-size: 0.875rem;"
+                               th:text="${activePlan.descriptionWednesday}">-</p>
+                        </div>
+
+                        <!-- Day Card: Thursday -->
+                        <div style="background: #1e293b; padding: 1.25rem; border-radius: 0.5rem; border: 1px solid #334155; transition: all 0.3s ease; transform: translateY(0);"
+                             onmouseover="this.style.borderColor='#10b981'; this.style.backgroundColor='rgba(30, 41, 59, 0.5)'; this.style.transform='translateY(-4px)'"
+                             onmouseout="this.style.borderColor='#334155'; this.style.backgroundColor='#1e293b'; this.style.transform='translateY(0)'">
+                            <strong style="color: #34d399; font-weight: 700; font-size: 1.125rem;">Thursday</strong>
+                            <p style="color: #cbd5e1; margin-top: 0.5rem; font-size: 0.875rem;"
+                               th:text="${activePlan.descriptionThursday}">-</p>
+                        </div>
+
+                        <!-- Day Card: Friday -->
+                        <div style="background: #1e293b; padding: 1.25rem; border-radius: 0.5rem; border: 1px solid #334155; transition: all 0.3s ease; transform: translateY(0);"
+                             onmouseover="this.style.borderColor='#10b981'; this.style.backgroundColor='rgba(30, 41, 59, 0.5)'; this.style.transform='translateY(-4px)'"
+                             onmouseout="this.style.borderColor='#334155'; this.style.backgroundColor='#1e293b'; this.style.transform='translateY(0)'">
+                            <strong style="color: #34d399; font-weight: 700; font-size: 1.125rem;">Friday</strong>
+                            <p style="color: #cbd5e1; margin-top: 0.5rem; font-size: 0.875rem;"
+                               th:text="${activePlan.descriptionFriday}">-</p>
+                        </div>
+
+                        <!-- Day Card: Saturday -->
+                        <div style="background: #1e293b; padding: 1.25rem; border-radius: 0.5rem; border: 1px solid #334155; transition: all 0.3s ease; transform: translateY(0);"
+                             onmouseover="this.style.borderColor='#10b981'; this.style.backgroundColor='rgba(30, 41, 59, 0.5)'; this.style.transform='translateY(-4px)'"
+                             onmouseout="this.style.borderColor='#334155'; this.style.backgroundColor='#1e293b'; this.style.transform='translateY(0)'">
+                            <strong style="color: #34d399; font-weight: 700; font-size: 1.125rem;">Saturday</strong>
+                            <p style="color: #cbd5e1; margin-top: 0.5rem; font-size: 0.875rem;"
+                               th:text="${activePlan.descriptionSaturday}">-</p>
+                        </div>
+
+                        <!-- Day Card: Sunday -->
+                        <div style="background: #1e293b; padding: 1.25rem; border-radius: 0.5rem; border: 1px solid #334155; transition: all 0.3s ease; transform: translateY(0);"
+                             onmouseover="this.style.borderColor='#10b981'; this.style.backgroundColor='rgba(30, 41, 59, 0.5)'; this.style.transform='translateY(-4px)'"
+                             onmouseout="this.style.borderColor='#334155'; this.style.backgroundColor='#1e293b'; this.style.transform='translateY(0)'">
+                            <strong style="color: #34d399; font-weight: 700; font-size: 1.125rem;">Sunday</strong>
+                            <p style="color: #cbd5e1; margin-top: 0.5rem; font-size: 0.875rem;"
+                               th:text="${activePlan.descriptionSunday}">-</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div style="padding: 1.5rem 2rem; border-top: 1px solid #334155; display: flex; flex-direction: row; gap: 1rem; flex-wrap: wrap;">
+
+                <a th:href="@{/workout-plans/edit/{id}(id=${activePlan.id})}"
+                   style="display: flex; align-items: center; justify-content: center; gap: 0.5rem; text-align: center; flex: 1; min-width: 0; background: #059669; color: #ffffff; font-weight: 600; padding: 0.75rem 1.5rem; border-radius: 0.5rem; text-decoration: none; transition: background-color 0.3s ease; box-shadow: 0 4px 6px -1px rgba(16, 185, 129, 0.2);
+              box-sizing: border-box;
+              font-size: 1rem;
+              line-height: 1.5; "
+                   onmouseover="this.style.backgroundColor='#047857'"
+                   onmouseout="this.style.backgroundColor='#059669'">
+                    <span>✏️</span>
+                    Edit Plan
+                </a>
+
+                <form th:action="@{/workout-plans/delete/{id}(id=${activePlan.id})}" th:method="post"
+                      style="flex: 1; min-width: 0;">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                    <button type="submit"
+                            style="display: flex; align-items: center; justify-content: center; gap: 0.5rem; text-align: center; width: 100%; background: #b91c1c; color: #ffffff; font-weight: 600; padding: 0.75rem 1.5rem; border-radius: 0.5rem; border: none; cursor: pointer; transition: background-color 0.3s ease; box-shadow: 0 4px 6px -1px rgba(185, 28, 28, 0.2);
+                       box-sizing: border-box;
+                       font-size: 1rem;
+                       line-height: 1.5; "
+                            onmouseover="this.style.backgroundColor='#991b1b'"
+                            onmouseout="this.style.backgroundColor='#b91c1c'">
+                        <span>🗑️</span>
+                        Delete Plan
+                    </button>
+                </form>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Regular Plans Section -->
+    <div th:if="${activePlan != null and !#lists.isEmpty(inactivePlans)}">
+        <h2 style="margin-top: 2rem; margin-bottom: 1rem; color: #ffffff;">Other Plans</h2>
+    </div>
+
+    <div class="card" th:each="plan : ${inactivePlans}">
+        <h2 th:text="${plan.name}">Plan Name</h2>
+        <p th:text="${plan.description}">Description</p>
+        <p style="font-size: 0.8em; color: #666;">Plan ID: <span th:text="${plan.id}">ID</span></p>
+        <div class="list-cards" style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); margin-top: .5rem;">
+            <div class="goal-card"><strong>Mon</strong>
+                <p class="meta" th:text="${plan.descriptionMonday}">-</p></div>
+            <div class="goal-card"><strong>Tue</strong>
+                <p class="meta" th:text="${plan.descriptionTuesday}">-</p></div>
+            <div class="goal-card"><strong>Wed</strong>
+                <p class="meta" th:text="${plan.descriptionWednesday}">-</p></div>
+            <div class="goal-card"><strong>Thu</strong>
+                <p class="meta" th:text="${plan.descriptionThursday}">-</p></div>
+            <div class="goal-card"><strong>Fri</strong>
+                <p class="meta" th:text="${plan.descriptionFriday}">-</p></div>
+            <div class="goal-card"><strong>Sat</strong>
+                <p class="meta" th:text="${plan.descriptionSaturday}">-</p></div>
+            <div class="goal-card"><strong>Sun</strong>
+                <p class="meta" th:text="${plan.descriptionSunday}">-</p></div>
+        </div>
+
+        <!-- FIX 2: Button container for inactive plans -->
+        <div style="margin-top: 1.5rem; display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: stretch;">
+            <a th:href="@{/workout-plans/edit/{id}(id=${plan.id})}" class="btn btn-primary"
+               style="text-decoration: none; display: flex; align-items: center; justify-content: center;">Edit</a>
+
+            <form th:action="@{/workout-plans/delete/{id}(id=${plan.id})}" th:method="post"
+                  style="margin: 0; display: flex;">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                <button type="submit"
+                        class="btn btn-danger"
+                        style="height: 100%;">
+                    Delete
+                </button>
+            </form>
+
+            <form th:action="@{/workout-plans/set-active/{id}(id=${plan.id})}" th:method="post" style="margin: 0;">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                <button type="submit" class="btn btn-success" style="height: 100%;">Set as Active</button>
+            </form>
+        </div>
+
+    </div>
+</main>
+</body>
+</html>

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/_header :: head}"></head>
+<body>
+<header th:replace="~{fragments/_header :: header}"></header>
+<main class="container">
+    <div class="card slide-up">
+        <h1>Add a New Workout Plan</h1>
+        <form th:action="@{/workout-plans/add}" th:method="post" th:object="${planDto}">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+            <div>
+                <label for="name">Plan Name</label>
+                <input type="text" id="name" th:field="*{name}" placeholder="e.g., Push/Pull/Legs" />
+                <p class="alert alert-error" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></p>
+            </div>
+            <div>
+                <label for="description">Overview</label>
+                <textarea id="description" th:field="*{description}" placeholder="High-level plan overview"></textarea>
+            </div>
+
+            <h2>Weekly Schedule</h2>
+            <div class="list-cards" style="grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));">
+                <div class="goal-card">
+                    <label for="monday">Monday</label>
+                    <textarea id="monday" th:field="*{descriptionMonday}" placeholder="Workout details for Monday"></textarea>
+                </div>
+                <div class="goal-card">
+                    <label for="tuesday">Tuesday</label>
+                    <textarea id="tuesday" th:field="*{descriptionTuesday}" placeholder="Workout details for Tuesday"></textarea>
+                </div>
+                <div class="goal-card">
+                    <label for="wednesday">Wednesday</label>
+                    <textarea id="wednesday" th:field="*{descriptionWednesday}" placeholder="Workout details for Wednesday"></textarea>
+                </div>
+                <div class="goal-card">
+                    <label for="thursday">Thursday</label>
+                    <textarea id="thursday" th:field="*{descriptionThursday}" placeholder="Workout details for Thursday"></textarea>
+                </div>
+                <div class="goal-card">
+                    <label for="friday">Friday</label>
+                    <textarea id="friday" th:field="*{descriptionFriday}" placeholder="Workout details for Friday"></textarea>
+                </div>
+                <div class="goal-card">
+                    <label for="saturday">Saturday</label>
+                    <textarea id="saturday" th:field="*{descriptionSaturday}" placeholder="Workout details for Saturday"></textarea>
+                </div>
+                <div class="goal-card">
+                    <label for="sunday">Sunday</label>
+                    <textarea id="sunday" th:field="*{descriptionSunday}" placeholder="Workout details for Sunday"></textarea>
+                </div>
+            </div>
+
+            <div style="margin-top: 1rem;">
+                <button type="submit" class="btn btn-primary" style="background: #10b981; color: #064e3b; font-weight: 600; border: none; cursor: pointer;">Create Plan</button>
+                <a th:href="@{/workout-plans}" class="btn btn-outline" style="margin-left:.5rem;">Back</a>
+            </div>
+        </form>
+    </div>
+</main>
+</body>
+</html>
