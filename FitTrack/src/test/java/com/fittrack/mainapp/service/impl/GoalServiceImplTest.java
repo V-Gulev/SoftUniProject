@@ -8,6 +8,7 @@ import com.fittrack.mainapp.exceptions.UnauthorizedOperationException;
 import com.fittrack.mainapp.model.dto.GoalDto;
 import com.fittrack.mainapp.model.entity.Goal;
 import com.fittrack.mainapp.model.entity.User;
+import com.fittrack.mainapp.model.enums.GoalCategory;
 import com.fittrack.mainapp.model.enums.GoalStatus;
 import com.fittrack.mainapp.model.enums.GoalUnit;
 import com.fittrack.mainapp.repository.GoalRepository;
@@ -64,20 +65,24 @@ class GoalServiceImplTest {
         testGoal.setId(goalId);
         testGoal.setUser(testUser);
         testGoal.setName("Initial Goal");
-        testGoal.setTargetValue(10.0);
-        testGoal.setCurrentValue(5.0);
+        testGoal.setTargetValue(75.0);
+        testGoal.setCurrentValue(80.0);
+        testGoal.setStartValue(80.0);
         testGoal.setStatus(GoalStatus.ACTIVE);
+        testGoal.setCategory(GoalCategory.WEIGHT_LOSS);
+        testGoal.setUnit(GoalUnit.KILOGRAMS);
     }
 
     @Test
     void testCreateGoal_ShouldSaveCorrectGoal() {
         GoalDto goalDto = new GoalDto();
-        goalDto.setName("Run 5k");
-        goalDto.setDescription("Run a full 5k without stopping.");
-        goalDto.setTargetValue(5.0);
-        goalDto.setCurrentValue(0.0);
-        goalDto.setUnit(GoalUnit.KILOMETERS);
-        goalDto.setTargetDate(LocalDate.now().plusMonths(1));
+        goalDto.setName("Lose 5kg");
+        goalDto.setDescription("Lose 5kg in 2 months.");
+        goalDto.setCategory(GoalCategory.WEIGHT_LOSS);
+        goalDto.setTargetValue(75.0);
+        goalDto.setCurrentValue(80.0);
+        goalDto.setUnit(GoalUnit.KILOGRAMS);
+        goalDto.setTargetDate(LocalDate.now().plusMonths(2));
 
         when(mockUserRepository.findByUsername(username)).thenReturn(Optional.of(testUser));
         when(mockGoalRepository.findByUser(testUser)).thenReturn(Collections.emptyList());
@@ -88,7 +93,8 @@ class GoalServiceImplTest {
         verify(mockGoalRepository).save(goalCaptor.capture());
 
         Goal savedGoal = goalCaptor.getValue();
-        assertEquals("Run 5k", savedGoal.getName());
+        assertEquals("Lose 5kg", savedGoal.getName());
+        assertEquals(80.0, savedGoal.getStartValue());
         assertEquals(testUser, savedGoal.getUser());
         verify(mockBadgeAwardService).checkGoalBadges(any(UUID.class), any(int.class), any(int.class));
     }
@@ -97,6 +103,7 @@ class GoalServiceImplTest {
     void testCreateGoal_WhenRepositoryFails_ShouldThrowGoalException() {
         GoalDto goalDto = new GoalDto();
         goalDto.setName("Test Goal");
+        goalDto.setCategory(GoalCategory.WEIGHT_LOSS);
 
         when(mockUserRepository.findByUsername(username)).thenReturn(Optional.of(testUser));
         when(mockGoalRepository.save(any(Goal.class))).thenThrow(new RuntimeException("Database error"));
@@ -108,24 +115,62 @@ class GoalServiceImplTest {
     }
 
     @Test
-    void testUpdateGoal_ShouldUpdateFields() {
+    void testUpdateGoal_ShouldUpdateFieldsAndCompleteDecreasingGoal() {
+        // Arrange: Create a complete DTO for a decreasing goal
         GoalDto goalDto = new GoalDto();
         goalDto.setName("Updated Goal Name");
-        goalDto.setCurrentValue(10.0);
-        goalDto.setTargetValue(10.0);
+        goalDto.setDescription("Updated description");
+        goalDto.setCategory(GoalCategory.WEIGHT_LOSS);
+        goalDto.setStatus(GoalStatus.ACTIVE);
+        goalDto.setTargetValue(75.0);
+        goalDto.setCurrentValue(75.0);
+        goalDto.setStartValue(80.0);
+        goalDto.setUnit(GoalUnit.KILOGRAMS);
         goalDto.setTargetDate(LocalDate.now().plusDays(10));
 
         when(mockUserRepository.findByUsername(username)).thenReturn(Optional.of(testUser));
         when(mockGoalRepository.findByIdAndUser(goalId, testUser)).thenReturn(Optional.of(testGoal));
 
+        // Act
         goalService.updateGoal(goalId, goalDto, username);
 
+        // Assert
         ArgumentCaptor<Goal> goalCaptor = ArgumentCaptor.forClass(Goal.class);
         verify(mockGoalRepository).save(goalCaptor.capture());
         Goal updatedGoal = goalCaptor.getValue();
 
         assertEquals("Updated Goal Name", updatedGoal.getName());
-        assertTrue(updatedGoal.getStatus().equals(GoalStatus.COMPLETED));
+        // Verify that the status is updated to COMPLETED
+        assertEquals(GoalStatus.COMPLETED, updatedGoal.getStatus(), "Goal status should be COMPLETED when current value meets target value.");
+    }
+
+    @Test
+    void testUpdateGoal_ShouldNotCompleteDecreasingGoalPrematurely() {
+        // Arrange: Create a DTO for a decreasing goal that is not yet complete
+        GoalDto goalDto = new GoalDto();
+        goalDto.setName("Updated Goal Name");
+        goalDto.setDescription("Updated description");
+        goalDto.setCategory(GoalCategory.WEIGHT_LOSS);
+        goalDto.setStatus(GoalStatus.ACTIVE);
+        goalDto.setTargetValue(75.0);
+        goalDto.setCurrentValue(78.0); // Not yet at target
+        goalDto.setStartValue(80.0);
+        goalDto.setUnit(GoalUnit.KILOGRAMS);
+        goalDto.setTargetDate(LocalDate.now().plusDays(10));
+
+        when(mockUserRepository.findByUsername(username)).thenReturn(Optional.of(testUser));
+        when(mockGoalRepository.findByIdAndUser(goalId, testUser)).thenReturn(Optional.of(testGoal));
+
+        // Act
+        goalService.updateGoal(goalId, goalDto, username);
+
+        // Assert
+        ArgumentCaptor<Goal> goalCaptor = ArgumentCaptor.forClass(Goal.class);
+        verify(mockGoalRepository).save(goalCaptor.capture());
+        Goal updatedGoal = goalCaptor.getValue();
+
+        // Verify that the status is still ACTIVE
+        assertEquals(GoalStatus.ACTIVE, updatedGoal.getStatus(), "Goal status should remain ACTIVE when current value has not yet reached target value.");
     }
 
     @Test

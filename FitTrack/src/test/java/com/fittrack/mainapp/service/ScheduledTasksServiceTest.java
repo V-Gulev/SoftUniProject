@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 
-import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -40,7 +40,7 @@ class ScheduledTasksServiceTest {
         oldGoal.setArchived(false);
         oldGoal.setCompletedDate(LocalDateTime.now().minusDays(40));
 
-        when(mockGoalRepository.findByStatusAndArchivedFalseAndCompletedDateBefore(GoalStatus.COMPLETED, any(LocalDateTime.class)))
+        when(mockGoalRepository.findByStatusAndArchivedFalseAndCompletedDateBefore(eq(GoalStatus.COMPLETED), any(LocalDateTime.class)))
                 .thenReturn(List.of(oldGoal));
 
         // Act

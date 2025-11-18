@@ -2,6 +2,7 @@ package com.fittrack.mainapp.service.impl;
 
 import com.fittrack.mainapp.badge.service.BadgeAwardService;
 import com.fittrack.mainapp.badge.service.BadgeNotificationService;
+import com.fittrack.mainapp.exceptions.WorkoutLogException;
 import com.fittrack.mainapp.model.dto.WorkoutLogDto;
 import com.fittrack.mainapp.model.entity.User;
 import com.fittrack.mainapp.model.entity.WorkoutLog;
@@ -131,7 +132,7 @@ class WorkoutLogServiceImplTest {
 
         when(mockUserRepository.findByUsername(username)).thenReturn(Optional.of(testUser));
 
-        assertThrows(IllegalArgumentException.class, () -> {
+        assertThrows(WorkoutLogException.class, () -> {
             workoutLogService.logWorkout(logDto, username);
         });
     }

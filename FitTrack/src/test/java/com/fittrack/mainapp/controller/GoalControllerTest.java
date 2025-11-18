@@ -1,6 +1,8 @@
 package com.fittrack.mainapp.controller;
 
 import com.fittrack.mainapp.model.dto.GoalDto;
+import com.fittrack.mainapp.model.enums.GoalCategory;
+import com.fittrack.mainapp.model.enums.GoalStatus;
 import com.fittrack.mainapp.service.GoalService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,6 +49,8 @@ class GoalControllerTest {
         GoalDto goalDto = new GoalDto();
         goalDto.setId(goalId);
         goalDto.setName("Test Goal");
+        goalDto.setCategory(GoalCategory.WEIGHT_LOSS);
+        goalDto.setStartValue(80.0);
 
         when(mockGoalService.getGoalById(goalId, "testuser")).thenReturn(goalDto);
 
@@ -66,8 +70,9 @@ class GoalControllerTest {
                         .with(csrf())
                         .param("name", "New Test Goal")
                         .param("description", "A description")
-                        .param("targetValue", "100")
-                        .param("currentValue", "10")
+                        .param("category", "WEIGHT_LOSS")
+                        .param("targetValue", "75")
+                        .param("currentValue", "80")
                         .param("unit", "KILOGRAMS")
                         .param("targetDate", "2025-12-31"))
                 .andExpect(status().is3xxRedirection())
@@ -80,9 +85,10 @@ class GoalControllerTest {
     void testAddGoal_WhenNameIsEmpty_ShouldRedirectToForm() throws Exception {
         mockMvc.perform(post("/goals/add")
                         .with(csrf())
-                        .param("name", "") // Invalid empty name
-                        .param("targetValue", "100")
-                        .param("currentValue", "10")
+                        .param("name", "")
+                        .param("category", "WEIGHT_LOSS")
+                        .param("targetValue", "75")
+                        .param("currentValue", "80")
                         .param("unit", "KILOGRAMS")
                         .param("targetDate", "2025-12-31"))
                 .andExpect(status().is3xxRedirection())
@@ -98,9 +104,14 @@ class GoalControllerTest {
 
         mockMvc.perform(post("/goals/edit/" + goalId)
                         .with(csrf())
+                        .param("id", goalId.toString())
                         .param("name", "Updated Name")
-                        .param("targetValue", "120")
-                        .param("currentValue", "20")
+                        .param("description", "A new description")
+                        .param("category", "WEIGHT_LOSS")
+                        .param("status", "ACTIVE")
+                        .param("targetValue", "75")
+                        .param("currentValue", "78")
+                        .param("startValue", "80")
                         .param("unit", "KILOGRAMS")
                         .param("targetDate", "2026-01-01"))
                 .andExpect(status().is3xxRedirection())
