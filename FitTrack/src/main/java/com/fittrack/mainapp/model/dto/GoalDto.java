@@ -39,6 +39,8 @@ public class GoalDto {
     @NotNull(message = "Current value must be set.")
     private Double currentValue;
 
+    private Double startValue;
+
     @NotNull(message = "Unit (e.g., kg, km) must be set.")
     private GoalUnit unit;
 

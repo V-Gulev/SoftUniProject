@@ -53,6 +53,7 @@ public class GoalServiceImpl implements GoalService {
             goal.setStatus(goalDto.getStatus());
             goal.setTargetValue(goalDto.getTargetValue());
             goal.setCurrentValue(goalDto.getCurrentValue());
+            goal.setStartValue(goalDto.getCurrentValue());
             goal.setUnit(goalDto.getUnit());
             goal.setStartDate(LocalDate.now());
             goal.setTargetDate(goalDto.getTargetDate());
@@ -75,19 +76,29 @@ public class GoalServiceImpl implements GoalService {
             goal.setName(goalDto.getName());
             goal.setDescription(goalDto.getDescription());
             goal.setCategory(goalDto.getCategory());
-            goal.setStatus(goalDto.getStatus());
             goal.setTargetValue(goalDto.getTargetValue());
             goal.setCurrentValue(goalDto.getCurrentValue());
             goal.setUnit(goalDto.getUnit());
             goal.setTargetDate(goalDto.getTargetDate());
 
-            boolean wasJustCompleted = goal.getStatus() != GoalStatus.COMPLETED && goalDto.getStatus() == GoalStatus.COMPLETED;
+            boolean isIncreasingGoal = goal.getTargetValue() > goal.getStartValue();
+            boolean isCompleted;
 
-            if (goalDto.getStatus() == GoalStatus.COMPLETED) {
+            if (isIncreasingGoal) {
+                isCompleted = goal.getCurrentValue() >= goal.getTargetValue();
+            } else {
+                isCompleted = goal.getCurrentValue() <= goal.getTargetValue();
+            }
+
+            boolean wasJustCompleted = goal.getStatus() != GoalStatus.COMPLETED && isCompleted;
+
+            if (isCompleted) {
+                goal.setStatus(GoalStatus.COMPLETED);
                 if (goal.getCompletedDate() == null) {
                     goal.setCompletedDate(LocalDateTime.now());
                 }
             } else {
+                goal.setStatus(goalDto.getStatus());
                 goal.setCompletedDate(null);
             }
 
@@ -147,7 +158,9 @@ public class GoalServiceImpl implements GoalService {
         int totalGoals = userGoals.size();
         int completedGoals = (int) userGoals.stream().filter(g -> g.getStatus() == GoalStatus.COMPLETED).count();
         BadgeDto awardedBadge = badgeAwardService.checkGoalBadges(user.getId(), totalGoals, completedGoals);
-        badgeNotificationService.setLastAwardedBadge(awardedBadge);
+        if (awardedBadge != null) {
+            badgeNotificationService.setLastAwardedBadge(awardedBadge);
+        }
     }
 
     @Override
@@ -174,6 +187,7 @@ public class GoalServiceImpl implements GoalService {
         dto.setStatus(goal.getStatus());
         dto.setTargetValue(goal.getTargetValue());
         dto.setCurrentValue(goal.getCurrentValue());
+        dto.setStartValue(goal.getStartValue());
         dto.setUnit(goal.getUnit());
         dto.setTargetDate(goal.getTargetDate());
         return dto;

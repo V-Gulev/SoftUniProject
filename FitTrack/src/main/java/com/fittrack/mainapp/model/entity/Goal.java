@@ -52,6 +52,9 @@ public class Goal {
     private Double currentValue;
 
     @NotNull
+    private Double startValue;
+
+    @NotNull
     @Enumerated(EnumType.STRING)
     private GoalUnit unit;
 

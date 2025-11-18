@@ -6,6 +6,14 @@
 
 <main class="container">
 
+    <div th:if="${awardedBadge}" style="background: #2563eb; color: #ffffff; padding: 1.5rem; border-radius: 0.75rem; margin-bottom: 1.5rem; border: 1px solid #1d4ed8; text-align: center;">
+        <h2 style="font-size: 1.5rem; font-weight: 700; margin: 0 0 0.5rem 0;">🎉 New Badge Unlocked! 🎉</h2>
+        <div style="display: flex; align-items: center; justify-content: center; gap: 1rem;">
+            <img th:src="${awardedBadge.iconUrl}" th:alt="${awardedBadge.name}" style="width: 50px; height: 50px;"/>
+            <p style="margin: 0; font-size: 1.25rem;" th:text="${awardedBadge.name}"></p>
+        </div>
+    </div>
+
     <!-- Header -->
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;">
         <h1 style="color: #ffffff; font-size: 2.25rem; font-weight: 700; margin: 0;">My Goals</h1>
@@ -50,7 +58,8 @@
             </div>
             <div>
                 <div class="progress-bar" style="margin-bottom: 0.5rem;">
-                    <div class="progress" th:style="'width: ' + (${goal.currentValue / goal.targetValue * 100}) + '%;'"></div>
+                    <div class="progress" th:with="totalDistance=${goal.targetValue - goal.startValue}, currentDistance=${goal.currentValue - goal.startValue}, progressPercentage=${totalDistance == 0 ? 100 : (currentDistance / totalDistance) * 100}"
+                         th:style="'width: ' + ${#numbers.formatDecimal(T(java.lang.Math).min(100.0, T(java.lang.Math).max(0.0, progressPercentage)), 1, 2)} + '%;'"></div>
                 </div>
                 <div style="display: flex; justify-content: space-between; font-size: 0.875rem; color: #94a3b8;">
                     <span th:text="${#numbers.formatDecimal(goal.currentValue, 1, 0)} + ' ' + ${goal.unit.displayName}"></span>
