@@ -4,9 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fittrack.badgeservice.model.dto.BadgeAwardDto;
 import com.fittrack.badgeservice.service.BadgeService;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -24,15 +24,13 @@ class BadgeControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    @MockBean
+    @Mock
     private BadgeService mockBadgeService;
 
     @Test
     void testAwardBadge_ShouldReturnCreatedStatus() throws Exception {
-        // Arrange
         BadgeAwardDto awardDto = new BadgeAwardDto("Test Badge", "url", UUID.randomUUID());
 
-        // Act & Assert
         mockMvc.perform(post("/badges")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(awardDto)))
