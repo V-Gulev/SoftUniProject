@@ -11,7 +11,6 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -37,8 +36,17 @@ class WorkoutPlanControllerTest {
     @Test
     @WithMockUser(username = "testuser")
     void testGetAllPlans_ShouldReturnPlansView() throws Exception {
-        WorkoutPlanDto plan1 = new WorkoutPlanDto(UUID.randomUUID(), "Plan 1", "Description 1", null, null, null, null, null, null, null);
-        WorkoutPlanDto plan2 = new WorkoutPlanDto(UUID.randomUUID(), "Plan 2", "Description 2", null, null, null, null, null, null, null);
+        WorkoutPlanDto plan1 = new WorkoutPlanDto(UUID.randomUUID(), "Plan 1", "Description 1"
+                , null, null
+                , null, null
+                , null, null
+                , null);
+
+        WorkoutPlanDto plan2 = new WorkoutPlanDto(UUID.randomUUID(), "Plan 2", "Description 2"
+                , null, null
+                , null, null
+                , null, null
+                , null);
 
         when(mockWorkoutPlanService.getActivePlan("testuser")).thenReturn(null);
         when(mockWorkoutPlanService.getInactivePlansForUser("testuser"))
@@ -73,7 +81,7 @@ class WorkoutPlanControllerTest {
     void testAddPlan_WhenNameIsEmpty_ShouldRedirectToForm() throws Exception {
         mockMvc.perform(post("/workout-plans/add")
                         .with(csrf())
-                        .param("name", "") // Invalid empty name
+                        .param("name", "")
                         .param("description", "Some description"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/workout-plans/add"))

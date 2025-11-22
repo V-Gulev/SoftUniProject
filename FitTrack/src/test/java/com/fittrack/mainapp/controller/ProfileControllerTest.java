@@ -83,7 +83,7 @@ class ProfileControllerTest {
     void testEditProfile_WhenUsernameIsEmpty_ShouldRedirectToEditForm() throws Exception {
         mockMvc.perform(post("/profile/edit")
                         .with(csrf())
-                        .param("username", "") // Invalid empty username
+                        .param("username", "")
                         .param("email", "new@email.com"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/profile/edit"))

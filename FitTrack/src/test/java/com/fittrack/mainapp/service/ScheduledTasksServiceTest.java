@@ -34,7 +34,6 @@ class ScheduledTasksServiceTest {
 
     @Test
     void testArchiveOldGoals_ShouldArchiveCompletedGoals() {
-        // Arrange
         Goal oldGoal = new Goal();
         oldGoal.setStatus(GoalStatus.COMPLETED);
         oldGoal.setArchived(false);
@@ -43,34 +42,26 @@ class ScheduledTasksServiceTest {
         when(mockGoalRepository.findByStatusAndArchivedFalseAndCompletedDateBefore(eq(GoalStatus.COMPLETED), any(LocalDateTime.class)))
                 .thenReturn(List.of(oldGoal));
 
-        // Act
         scheduledTasksService.archiveOldGoals();
 
-        // Assert
         verify(mockGoalRepository, times(1)).saveAll(any());
     }
 
     @Test
     void testReportRecentlyCompletedGoals_ShouldQueryForRecentGoals() {
-        // Arrange
         when(mockGoalRepository.countByCompletedDateAfter(any(LocalDateTime.class))).thenReturn(5L);
 
-        // Act
         scheduledTasksService.reportRecentlyCompletedGoals();
 
-        // Assert
         verify(mockGoalRepository, times(1)).countByCompletedDateAfter(any(LocalDateTime.class));
     }
 
     @Test
     void testCheckForInactiveUsers_ShouldLogoutInactiveUsers() {
-        // Arrange
         when(mockUserRepository.findByLoggedInTrue()).thenReturn(Collections.emptyList());
 
-        // Act
         scheduledTasksService.checkForInactiveUsers();
 
-        // Assert
         verify(mockUserRepository, times(1)).findByLoggedInTrue();
         verify(mockUserRepository, never()).save(any());
     }

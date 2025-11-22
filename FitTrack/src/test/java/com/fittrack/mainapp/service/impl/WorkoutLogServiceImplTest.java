@@ -17,7 +17,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -52,8 +54,7 @@ class WorkoutLogServiceImplTest {
                 mockWorkoutLogRepository,
                 mockWorkoutPlanRepository,
                 mockBadgeAwardService,
-                mockBadgeNotificationService
-        );
+                mockBadgeNotificationService);
 
         testUser = new User();
         testUser.setId(UUID.randomUUID());
@@ -135,5 +136,49 @@ class WorkoutLogServiceImplTest {
         assertThrows(WorkoutLogException.class, () -> {
             workoutLogService.logWorkout(logDto, username);
         });
+    }
+
+    @Test
+    void testGetLogsForUser_ShouldReturnAllLogs() {
+        WorkoutLog log1 = new WorkoutLog();
+        log1.setId(UUID.randomUUID());
+        log1.setDescription("Log 1");
+        log1.setDurationMinutes(60);
+        log1.setDate(LocalDate.now());
+
+        WorkoutLog log2 = new WorkoutLog();
+        log2.setId(UUID.randomUUID());
+        log2.setDescription("Log 2");
+        log2.setDurationMinutes(45);
+        log2.setDate(LocalDate.now().minusDays(1));
+
+        when(mockUserRepository.findByUsername(username)).thenReturn(Optional.of(testUser));
+        when(mockWorkoutLogRepository.findByUserOrderByDateDesc(testUser)).thenReturn(Arrays.asList(log1, log2));
+
+        List<WorkoutLogDto> result = workoutLogService.getLogsForUser(username);
+
+        assertEquals(2, result.size());
+        assertEquals("Log 1", result.get(0).getDescription());
+        assertEquals("Log 2", result.get(1).getDescription());
+    }
+
+    @Test
+    void testGetLogById_Success() {
+        WorkoutLog log = new WorkoutLog();
+        log.setId(logId);
+        log.setUser(testUser);
+        log.setDescription("Test Log");
+        log.setDurationMinutes(90);
+        log.setDate(LocalDate.now());
+
+        when(mockUserRepository.findByUsername(username)).thenReturn(Optional.of(testUser));
+        when(mockWorkoutLogRepository.findByIdAndUser(logId, testUser)).thenReturn(Optional.of(log));
+
+        WorkoutLogDto result = workoutLogService.getLogById(logId, username);
+
+        assertNotNull(result);
+        assertEquals("Test Log", result.getDescription());
+        assertEquals(1, result.getHours());
+        assertEquals(30, result.getMinutes());
     }
 }

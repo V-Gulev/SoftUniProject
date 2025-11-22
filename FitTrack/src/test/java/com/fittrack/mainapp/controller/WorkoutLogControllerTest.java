@@ -32,7 +32,7 @@ class WorkoutLogControllerTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private WorkoutLogService mockWorkoutLogService; // Changed from ApplicationService
+    private WorkoutLogService mockWorkoutLogService;
     @MockBean
     private WorkoutPlanService mockWorkoutPlanService;
 
@@ -58,7 +58,7 @@ class WorkoutLogControllerTest {
         logDto.setHours(1);
         logDto.setMinutes(0);
 
-        when(mockWorkoutLogService.getLogById(logId, "testuser")).thenReturn(logDto); // Changed call
+        when(mockWorkoutLogService.getLogById(logId, "testuser")).thenReturn(logDto);
         when(mockWorkoutPlanService.getPlansForUser("testuser")).thenReturn(Collections.emptyList());
 
         mockMvc.perform(get("/logs/edit/" + logId))
@@ -71,7 +71,7 @@ class WorkoutLogControllerTest {
     @Test
     @WithMockUser(username = "testuser")
     void testLogWorkout_WhenValidData_ShouldRedirectToHistory() throws Exception {
-        doNothing().when(mockWorkoutLogService).logWorkout(any(WorkoutLogDto.class), eq("testuser")); // Changed call
+        doNothing().when(mockWorkoutLogService).logWorkout(any(WorkoutLogDto.class), eq("testuser"));
 
         mockMvc.perform(post("/logs/add")
                         .with(csrf())
@@ -89,7 +89,7 @@ class WorkoutLogControllerTest {
     void testLogWorkout_WhenDateIsNull_ShouldRedirectToForm() throws Exception {
         mockMvc.perform(post("/logs/add")
                         .with(csrf())
-                        .param("date", "") // Invalid empty date
+                        .param("date", "")
                         .param("hours", "1")
                         .param("minutes", "15"))
                 .andExpect(status().is3xxRedirection())

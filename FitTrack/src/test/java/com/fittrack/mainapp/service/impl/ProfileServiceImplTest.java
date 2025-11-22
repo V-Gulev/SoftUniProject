@@ -40,13 +40,11 @@ class ProfileServiceImplTest {
                 mockGoalService,
                 mockWorkoutPlanService,
                 mockWorkoutLogService,
-                mockBadgeServiceClient
-        );
+                mockBadgeServiceClient);
     }
 
     @Test
     void testBuildProfile_ShouldConstructCorrectDto() {
-        // Arrange
         String username = "testuser";
         User testUser = new User();
         testUser.setId(UUID.randomUUID());
@@ -58,10 +56,8 @@ class ProfileServiceImplTest {
         when(mockWorkoutLogService.getLogsForUser(username)).thenReturn(Collections.emptyList());
         when(mockBadgeServiceClient.getBadgesForUser(testUser.getId())).thenReturn(Collections.emptyList());
 
-        // Act
         ProfileViewDto result = profileService.buildProfile(username);
 
-        // Assert
         assertNotNull(result);
         assertEquals(username, result.getUserProfile().getUsername());
         assertEquals(0, result.getTotalGoals());
@@ -71,33 +67,53 @@ class ProfileServiceImplTest {
 
     @Test
     void testUpdateProfile_ShouldReturnTrueIfCredentialsChanged() {
-        // Arrange
         String oldUsername = "oldUser";
         ProfileEditDto profileDto = new ProfileEditDto();
         profileDto.setUsername("newUser");
         profileDto.setNewPassword("newPassword");
 
-        // Act
         boolean result = profileService.updateProfile(profileDto, oldUsername);
 
-        // Assert
         assertTrue(result);
         verify(mockUserService).updateProfile(profileDto, oldUsername);
     }
 
     @Test
     void testUpdateProfile_ShouldReturnFalseIfCredentialsNotChanged() {
-        // Arrange
         String username = "sameUser";
         ProfileEditDto profileDto = new ProfileEditDto();
         profileDto.setUsername(username);
-        profileDto.setNewPassword(null); // No password change
+        profileDto.setNewPassword(null);
 
-        // Act
         boolean result = profileService.updateProfile(profileDto, username);
 
-        // Assert
         assertFalse(result);
         verify(mockUserService).updateProfile(profileDto, username);
+    }
+
+    @Test
+    void testBuildProfileEditDto_ShouldConstructCorrectDto() {
+        String username = "testuser";
+        User testUser = new User();
+        testUser.setUsername(username);
+        testUser.setEmail("test@example.com");
+
+        when(mockUserService.findUserByUsername(username)).thenReturn(testUser);
+
+        ProfileEditDto result = profileService.buildProfileEditDto(username);
+
+        assertNotNull(result);
+        assertEquals(username, result.getUsername());
+        assertEquals("test@example.com", result.getEmail());
+    }
+
+    @Test
+    void testLogout_ShouldCallSecurityContextLogoutHandler() {
+        jakarta.servlet.http.HttpServletRequest request = mock(jakarta.servlet.http.HttpServletRequest.class);
+        jakarta.servlet.http.HttpServletResponse response = mock(jakarta.servlet.http.HttpServletResponse.class);
+
+        profileService.logout(request, response);
+
+        verify(request, atLeastOnce()).getSession(false);
     }
 }

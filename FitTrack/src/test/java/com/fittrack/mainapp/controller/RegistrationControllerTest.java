@@ -29,10 +29,8 @@ class RegistrationControllerTest {
 
     @Test
     void testRegisterUser_Success() throws Exception {
-        // Arrange
         doNothing().when(mockUserService).registerUser(any(UserRegistrationDto.class));
 
-        // Act & Assert
         mockMvc.perform(post("/register")
                         .with(csrf())
                         .param("username", "testuser")
@@ -46,14 +44,12 @@ class RegistrationControllerTest {
 
     @Test
     void testRegisterUser_WhenServiceThrowsException_ShouldRedirectToRegister() throws Exception {
-        // Arrange
         UserRegistrationDto dto = new UserRegistrationDto();
         dto.setUsername("testuser");
         
         doThrow(new RegistrationException("Username is already taken.", dto))
                 .when(mockUserService).registerUser(any(UserRegistrationDto.class));
 
-        // Act & Assert
         mockMvc.perform(post("/register")
                         .with(csrf())
                         .param("username", "testuser")

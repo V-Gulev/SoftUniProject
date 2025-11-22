@@ -41,7 +41,6 @@ class DashboardServiceImplTest {
 
     @Test
     void testBuildDashboard_ShouldAggregateDataCorrectly() {
-        // Arrange
         String username = "testuser";
         GoalDto completedGoal = new GoalDto();
         completedGoal.setStatus(GoalStatus.COMPLETED);
@@ -52,10 +51,8 @@ class DashboardServiceImplTest {
         when(mockWorkoutPlanService.getPlansForUser(username)).thenReturn(Collections.emptyList());
         when(mockWorkoutLogService.getLogsForUser(username)).thenReturn(Collections.emptyList());
 
-        // Act
         DashboardSummaryDto result = dashboardService.buildDashboard(username);
 
-        // Assert
         assertNotNull(result);
         assertEquals(2, result.getGoals().size());
         assertEquals(1, result.getCompletedGoalsCount());

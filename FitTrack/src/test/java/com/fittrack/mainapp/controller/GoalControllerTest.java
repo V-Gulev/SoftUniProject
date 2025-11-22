@@ -2,7 +2,6 @@ package com.fittrack.mainapp.controller;
 
 import com.fittrack.mainapp.model.dto.GoalDto;
 import com.fittrack.mainapp.model.enums.GoalCategory;
-import com.fittrack.mainapp.model.enums.GoalStatus;
 import com.fittrack.mainapp.service.GoalService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

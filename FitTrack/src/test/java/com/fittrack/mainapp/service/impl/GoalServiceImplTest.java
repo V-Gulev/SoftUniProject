@@ -3,7 +3,6 @@ package com.fittrack.mainapp.service.impl;
 import com.fittrack.mainapp.badge.service.BadgeAwardService;
 import com.fittrack.mainapp.badge.service.BadgeNotificationService;
 import com.fittrack.mainapp.exceptions.GoalException;
-import com.fittrack.mainapp.exceptions.ResourceNotFoundException;
 import com.fittrack.mainapp.exceptions.UnauthorizedOperationException;
 import com.fittrack.mainapp.model.dto.GoalDto;
 import com.fittrack.mainapp.model.entity.Goal;
@@ -116,7 +115,6 @@ class GoalServiceImplTest {
 
     @Test
     void testUpdateGoal_ShouldUpdateFieldsAndCompleteDecreasingGoal() {
-        // Arrange: Create a complete DTO for a decreasing goal
         GoalDto goalDto = new GoalDto();
         goalDto.setName("Updated Goal Name");
         goalDto.setDescription("Updated description");
@@ -131,29 +129,25 @@ class GoalServiceImplTest {
         when(mockUserRepository.findByUsername(username)).thenReturn(Optional.of(testUser));
         when(mockGoalRepository.findByIdAndUser(goalId, testUser)).thenReturn(Optional.of(testGoal));
 
-        // Act
         goalService.updateGoal(goalId, goalDto, username);
 
-        // Assert
         ArgumentCaptor<Goal> goalCaptor = ArgumentCaptor.forClass(Goal.class);
         verify(mockGoalRepository).save(goalCaptor.capture());
         Goal updatedGoal = goalCaptor.getValue();
 
         assertEquals("Updated Goal Name", updatedGoal.getName());
-        // Verify that the status is updated to COMPLETED
         assertEquals(GoalStatus.COMPLETED, updatedGoal.getStatus(), "Goal status should be COMPLETED when current value meets target value.");
     }
 
     @Test
     void testUpdateGoal_ShouldNotCompleteDecreasingGoalPrematurely() {
-        // Arrange: Create a DTO for a decreasing goal that is not yet complete
         GoalDto goalDto = new GoalDto();
         goalDto.setName("Updated Goal Name");
         goalDto.setDescription("Updated description");
         goalDto.setCategory(GoalCategory.WEIGHT_LOSS);
         goalDto.setStatus(GoalStatus.ACTIVE);
         goalDto.setTargetValue(75.0);
-        goalDto.setCurrentValue(78.0); // Not yet at target
+        goalDto.setCurrentValue(78.0);
         goalDto.setStartValue(80.0);
         goalDto.setUnit(GoalUnit.KILOGRAMS);
         goalDto.setTargetDate(LocalDate.now().plusDays(10));
@@ -161,15 +155,12 @@ class GoalServiceImplTest {
         when(mockUserRepository.findByUsername(username)).thenReturn(Optional.of(testUser));
         when(mockGoalRepository.findByIdAndUser(goalId, testUser)).thenReturn(Optional.of(testGoal));
 
-        // Act
         goalService.updateGoal(goalId, goalDto, username);
 
-        // Assert
         ArgumentCaptor<Goal> goalCaptor = ArgumentCaptor.forClass(Goal.class);
         verify(mockGoalRepository).save(goalCaptor.capture());
         Goal updatedGoal = goalCaptor.getValue();
 
-        // Verify that the status is still ACTIVE
         assertEquals(GoalStatus.ACTIVE, updatedGoal.getStatus(), "Goal status should remain ACTIVE when current value has not yet reached target value.");
     }
 
@@ -194,7 +185,7 @@ class GoalServiceImplTest {
         verify(mockGoalRepository).saveAndFlush(goalCaptor.capture());
         Goal completedGoal = goalCaptor.getValue();
 
-        assertTrue(completedGoal.getStatus().equals(GoalStatus.COMPLETED));
+        assertEquals(GoalStatus.COMPLETED, completedGoal.getStatus());
         assertNotNull(completedGoal.getCompletedDate());
         assertEquals(completedGoal.getTargetValue(), completedGoal.getCurrentValue());
     }

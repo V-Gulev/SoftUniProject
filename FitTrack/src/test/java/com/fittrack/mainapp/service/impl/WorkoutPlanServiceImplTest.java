@@ -1,6 +1,5 @@
 package com.fittrack.mainapp.service.impl;
 
-import com.fittrack.mainapp.exceptions.UnauthorizedOperationException;
 import com.fittrack.mainapp.exceptions.WorkoutPlanException;
 import com.fittrack.mainapp.model.dto.WorkoutPlanDto;
 import com.fittrack.mainapp.model.entity.User;
@@ -16,7 +15,9 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -43,7 +44,8 @@ class WorkoutPlanServiceImplTest {
 
     @BeforeEach
     void setUp() {
-        workoutPlanService = new WorkoutPlanServiceImpl(mockWorkoutPlanRepository, mockUserRepository, mockBadgeAwardService, mockBadgeNotificationService);
+        workoutPlanService = new WorkoutPlanServiceImpl(mockWorkoutPlanRepository, mockUserRepository,
+                mockBadgeAwardService, mockBadgeNotificationService);
         testUser = new User();
         testUser.setId(UUID.randomUUID());
         testUser.setUsername(username);
@@ -51,7 +53,11 @@ class WorkoutPlanServiceImplTest {
 
     @Test
     void testCreatePlan_ShouldSaveCorrectPlan() {
-        WorkoutPlanDto planDto = new WorkoutPlanDto(null, "Morning Routine", "A simple morning workout.", null, null, null, null, null, null, null);
+        WorkoutPlanDto planDto = new WorkoutPlanDto(null, "Morning Routine", "A simple morning workout."
+                , null, null
+                , null, null
+                , null, null
+                , null);
 
         when(mockUserRepository.findByUsername(username)).thenReturn(Optional.of(testUser));
         when(mockWorkoutPlanRepository.findByUser(testUser)).thenReturn(Collections.singletonList(new WorkoutPlan()));
@@ -73,7 +79,11 @@ class WorkoutPlanServiceImplTest {
         existingPlan.setId(planId);
         existingPlan.setUser(testUser);
 
-        WorkoutPlanDto planDto = new WorkoutPlanDto(planId, "Evening Routine", "An evening workout.", null, null, null, null, null, null, null);
+        WorkoutPlanDto planDto = new WorkoutPlanDto(planId, "Evening Routine", "An evening workout."
+                , null, null
+                , null, null
+                , null, null
+                , null);
 
         when(mockWorkoutPlanRepository.findById(planId)).thenReturn(Optional.of(existingPlan));
 
@@ -93,7 +103,7 @@ class WorkoutPlanServiceImplTest {
 
         WorkoutPlan existingPlan = new WorkoutPlan();
         existingPlan.setId(planId);
-        existingPlan.setUser(otherUser); // Plan belongs to someone else
+        existingPlan.setUser(otherUser);
 
         WorkoutPlanDto planDto = new WorkoutPlanDto();
 
@@ -134,5 +144,57 @@ class WorkoutPlanServiceImplTest {
         User updatedUser = userCaptor.getValue();
 
         assertEquals(planId, updatedUser.getActiveWorkoutPlan().getId());
+    }
+
+    @Test
+    void testGetPlansForUser_ShouldReturnPlans() {
+        WorkoutPlan plan = new WorkoutPlan();
+        plan.setId(UUID.randomUUID());
+        plan.setName("Test Plan");
+
+        when(mockUserRepository.findByUsername(username)).thenReturn(Optional.of(testUser));
+        when(mockWorkoutPlanRepository.findByUser(testUser)).thenReturn(Collections.singletonList(plan));
+
+        List<WorkoutPlanDto> result = workoutPlanService.getPlansForUser(username);
+
+        assertEquals(1, result.size());
+        assertEquals("Test Plan", result.get(0).getName());
+    }
+
+    @Test
+    void testGetInactivePlansForUser_ShouldFilterActivePlan() {
+        WorkoutPlan activePlan = new WorkoutPlan();
+        activePlan.setId(planId);
+        activePlan.setName("Active Plan");
+
+        WorkoutPlan inactivePlan = new WorkoutPlan();
+        inactivePlan.setId(UUID.randomUUID());
+        inactivePlan.setName("Inactive Plan");
+
+        testUser.setActiveWorkoutPlan(activePlan);
+
+        when(mockUserRepository.findByUsername(username)).thenReturn(Optional.of(testUser));
+        when(mockWorkoutPlanRepository.findByUser(testUser)).thenReturn(Arrays.asList(activePlan, inactivePlan));
+
+        List<WorkoutPlanDto> result = workoutPlanService.getInactivePlansForUser(username);
+
+        assertEquals(1, result.size());
+        assertEquals("Inactive Plan", result.get(0).getName());
+    }
+
+    @Test
+    void testGetActivePlan_WhenExists_ShouldReturnPlan() {
+        WorkoutPlan activePlan = new WorkoutPlan();
+        activePlan.setId(planId);
+        activePlan.setName("Active Plan");
+
+        testUser.setActiveWorkoutPlan(activePlan);
+
+        when(mockUserRepository.findByUsername(username)).thenReturn(Optional.of(testUser));
+
+        WorkoutPlanDto result = workoutPlanService.getActivePlan(username);
+
+        assertNotNull(result);
+        assertEquals("Active Plan", result.getName());
     }
 }

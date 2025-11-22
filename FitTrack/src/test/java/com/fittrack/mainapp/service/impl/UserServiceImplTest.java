@@ -16,12 +16,12 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -44,12 +44,11 @@ class UserServiceImplTest {
     @BeforeEach
     void setUp() {
         userService = new UserServiceImpl(mockRoleRepository, mockUserRepository, mockPasswordEncoder);
-
         testUser = new User();
         testUser.setId(userId);
         testUser.setUsername(username);
         testUser.setEmail("test@example.com");
-        testUser.setPassword(mockPasswordEncoder.encode("oldPassword")); // Mock encoded old password
+        testUser.setPassword(mockPasswordEncoder.encode("oldPassword"));
     }
 
     @Test
@@ -182,7 +181,7 @@ class UserServiceImplTest {
 
         assertEquals("updatedUser", updatedUser.getUsername());
         assertEquals("updated@example.com", updatedUser.getEmail());
-        assertEquals(testUser.getPassword(), updatedUser.getPassword()); // Password should not change
+        assertEquals(testUser.getPassword(), updatedUser.getPassword());
     }
 
     @Test
@@ -215,7 +214,7 @@ class UserServiceImplTest {
         profileDto.setEmail("updated@example.com");
 
         User existingUserWithSameName = new User();
-        existingUserWithSameName.setId(UUID.randomUUID()); // Different ID
+        existingUserWithSameName.setId(UUID.randomUUID());
 
         when(mockUserRepository.findByUsername(username)).thenReturn(Optional.of(testUser));
         when(mockUserRepository.findByUsername("takenUser")).thenReturn(Optional.of(existingUserWithSameName));
@@ -275,13 +274,71 @@ class UserServiceImplTest {
         profileDto.setConfirmNewPassword("four");
 
         when(mockUserRepository.findByUsername(username)).thenReturn(Optional.of(testUser));
-        // FIX: Removed unnecessary stubbing for passwordEncoder.matches()
-        // as it's never reached in this test path.
 
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
             userService.updateProfile(profileDto, username);
         });
 
         assertEquals("New password must be at least 5 characters long.", exception.getMessage());
+    }
+
+    @Test
+    void testRegisterUser_WhenEmailExists_ShouldThrowException() {
+        UserRegistrationDto registrationDto = new UserRegistrationDto();
+        registrationDto.setUsername("newUser");
+        registrationDto.setEmail("existing@test.com");
+        registrationDto.setPassword("password123");
+        registrationDto.setConfirmPassword("password123");
+
+        when(mockUserRepository.findByUsername("newUser")).thenReturn(Optional.empty());
+        when(mockUserRepository.findByEmail("existing@test.com")).thenReturn(Optional.of(new User()));
+
+        RegistrationException exception = assertThrows(RegistrationException.class, () -> {
+            userService.registerUser(registrationDto);
+        });
+
+        assertEquals("Email is already registered.", exception.getMessage());
+    }
+
+    @Test
+    void testFindUserByUsername_ShouldReturnUser() {
+        when(mockUserRepository.findByUsername(username)).thenReturn(Optional.of(testUser));
+
+        User result = userService.findUserByUsername(username);
+
+        assertNotNull(result);
+        assertEquals(username, result.getUsername());
+    }
+
+    @Test
+    void testSwitchUserRole_ShouldToggleRole() {
+        Role userRole = new Role();
+        userRole.setName(RoleEnum.USER);
+        testUser.setRoles(new HashSet<>(Set.of(userRole)));
+
+        Role adminRole = new Role();
+        adminRole.setName(RoleEnum.ADMIN);
+
+        when(mockUserRepository.findById(userId)).thenReturn(Optional.of(testUser));
+        when(mockRoleRepository.findByName(RoleEnum.ADMIN)).thenReturn(Optional.of(adminRole));
+
+        userService.switchUserRole(userId);
+
+        ArgumentCaptor<User> userCaptor = ArgumentCaptor.forClass(User.class);
+        verify(mockUserRepository).save(userCaptor.capture());
+        User savedUser = userCaptor.getValue();
+
+        assertTrue(savedUser.getRoles().contains(adminRole));
+        assertFalse(savedUser.getRoles().contains(userRole));
+    }
+
+    @Test
+    void testFindAllUsers_ShouldReturnUserDtos() {
+        when(mockUserRepository.findAll()).thenReturn(java.util.Collections.singletonList(testUser));
+
+        java.util.List<com.fittrack.mainapp.model.dto.UserDto> result = userService.findAllUsers();
+
+        assertEquals(1, result.size());
+        assertEquals(username, result.get(0).getUsername());
     }
 }

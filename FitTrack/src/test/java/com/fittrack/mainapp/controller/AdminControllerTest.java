@@ -28,10 +28,8 @@ class AdminControllerTest {
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     void testManageUsers_AsAdmin_ShouldReturnUsersView() throws Exception {
-        // Arrange
         when(mockUserService.findAllUsers()).thenReturn(Collections.emptyList());
 
-        // Act & Assert
         mockMvc.perform(get("/admin/users"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("admin/users"))
@@ -41,7 +39,6 @@ class AdminControllerTest {
     @Test
     @WithMockUser(username = "user", roles = {"USER"})
     void testManageUsers_AsUser_ShouldBeForbidden() throws Exception {
-        // Act & Assert
         mockMvc.perform(get("/admin/users"))
                 .andExpect(status().isForbidden());
     }
