@@ -47,4 +47,8 @@ public class GoalDto {
     @NotNull(message = "Target date must be set.")
     @FutureOrPresent(message = "Target date must be in the present or future.")
     private LocalDate targetDate;
+
+    public boolean isCompleted() {
+        return this.status == GoalStatus.COMPLETED;
+    }
 }

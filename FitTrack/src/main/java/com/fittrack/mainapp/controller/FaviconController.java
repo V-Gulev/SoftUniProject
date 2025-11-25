@@ -11,5 +11,3 @@ public class FaviconController {
         return "redirect:/favicon.svg";
     }
 }
-
-
