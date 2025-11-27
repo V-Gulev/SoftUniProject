@@ -47,7 +47,7 @@ public class BadgeAwardService {
 
     public BadgeDto checkGoalBadges(UUID userId, int totalGoals, int completedGoals) {
         if (totalGoals == 1) {
-            BadgeDto badge = awardBadgeIfNotExists(userId, "Goal Setter", "/img/GoalSetter.png");
+            BadgeDto badge = awardBadgeIfNotExists(userId, "Goal Setter", "/images/GoalSetter.png");
             if (badge != null)
                 return badge;
         }
@@ -55,19 +55,13 @@ public class BadgeAwardService {
         BadgeDto awardedBadge = null;
 
         if (completedGoals == 1) {
-            awardedBadge = awardBadgeIfNotExists(userId, "First Goal Completed", "/img/FirstGoalCompleted.png");
+            awardedBadge = awardBadgeIfNotExists(userId, "First Goal Completed", "/images/FirstGoalCompleted.png");
         } else if (completedGoals == 5) {
-            awardedBadge = awardBadgeIfNotExists(userId, "Goal Master", "/img/GoalMaster.png");
+            awardedBadge = awardBadgeIfNotExists(userId, "Goal Master", "/images/GoalMaster.png");
         } else if (completedGoals == 10) {
-            awardedBadge = awardBadgeIfNotExists(userId, "Goal Champion", "/img/GoalChampion.png");
+            awardedBadge = awardBadgeIfNotExists(userId, "Goal Champion", "/images/GoalChampion.png");
         } else if (completedGoals == 25) {
-            awardedBadge = awardBadgeIfNotExists(userId, "Goal Legend", "/img/GoalLegend.png");
-        } else if (completedGoals == 50) {
-            awardedBadge = awardBadgeIfNotExists(userId, "Goal Hero",
-                    "https://cdn-icons-png.flaticon.com/512/3135/3135799.png");
-        } else if (completedGoals == 100) {
-            awardedBadge = awardBadgeIfNotExists(userId, "Goal God",
-                    "https://cdn-icons-png.flaticon.com/512/3135/3135743.png");
+            awardedBadge = awardBadgeIfNotExists(userId, "Goal Legend", "/images/GoalLegend.png");
         }
 
         return awardedBadge;
@@ -77,20 +71,13 @@ public class BadgeAwardService {
         BadgeDto awardedBadge = null;
 
         if (totalWorkouts == 1) {
-            awardedBadge = awardBadgeIfNotExists(userId, "First Workout", "/img/FirstWorkout.png");
-        }
-        if (totalWorkouts == 10) {
-            awardedBadge = awardBadgeIfNotExists(userId, "Workout Beginner", "/img/WorkoutBeginner.png");
-        }
-        if (totalWorkouts == 50) {
-            awardedBadge = awardBadgeIfNotExists(userId, "Workout Warrior", "/img/WorkoutWarrior.png");
-        }
-        if (totalWorkouts == 100) {
-            awardedBadge = awardBadgeIfNotExists(userId, "Workout Champion", "/img/WorkoutChampion.png");
-        }
-        if (totalWorkouts == 500) {
-            awardedBadge = awardBadgeIfNotExists(userId, "Workout Legend",
-                    "https://cdn-icons-png.flaticon.com/512/3135/3135815.png");
+            awardedBadge = awardBadgeIfNotExists(userId, "First Workout", "/images/FirstWorkout.png");
+        }else if (totalWorkouts == 10) {
+            awardedBadge = awardBadgeIfNotExists(userId, "Workout Beginner", "/images/WorkoutBeginner.png");
+        }else if (totalWorkouts == 50) {
+            awardedBadge = awardBadgeIfNotExists(userId, "Workout Warrior", "/images/WorkoutWarrior.png");
+        }else if (totalWorkouts == 100) {
+            awardedBadge = awardBadgeIfNotExists(userId, "Workout Champion", "/images/WorkoutChampion.png");
         }
 
         return awardedBadge;
@@ -98,7 +85,7 @@ public class BadgeAwardService {
 
     public BadgeDto checkPlanBadges(UUID userId, int totalPlans) {
         if (totalPlans == 1) {
-            return awardBadgeIfNotExists(userId, "Plan Creator", "/img/PlanCreator.png");
+            return awardBadgeIfNotExists(userId, "Plan Creator", "/images/PlanCreator.png");
         }
         return null;
     }

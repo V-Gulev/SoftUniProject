@@ -25,7 +25,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     private final PasswordEncoder passwordEncoder;
 
     public CustomOAuth2UserService(UserRepository userRepository, RoleRepository roleRepository,
-                                   PasswordEncoder passwordEncoder) {
+            PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
@@ -56,7 +56,10 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     private User registerNewUser(OAuth2User oAuth2User) {
         User user = new User();
         String email = oAuth2User.getAttribute("email");
-        String username = email;
+        String username = oAuth2User.getAttribute("login");
+        if (username == null) {
+            username = email;
+        }
         if (username != null && username.length() > 50) {
             username = username.substring(0, 50);
         }
