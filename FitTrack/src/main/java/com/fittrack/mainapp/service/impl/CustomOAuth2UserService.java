@@ -58,6 +58,9 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         String email = oAuth2User.getAttribute("email");
         String username = oAuth2User.getAttribute("login");
         if (username == null) {
+            username = oAuth2User.getAttribute("name");
+        }
+        if (username == null) {
             username = email;
         }
         if (username != null && username.length() > 50) {
