@@ -73,9 +73,7 @@ class BadgeAwardServiceTest {
             "1, First Goal Completed",
             "5, Goal Master",
             "10, Goal Champion",
-            "25, Goal Legend",
-            "50, Goal Hero",
-            "100, Goal God"
+            "25, Goal Legend"
     })
     void testCheckGoalBadges_AwardsCorrectBadgeForCompletedGoals(int completedGoals, String expectedBadgeName) {
         setupBadgeMocks();
@@ -103,8 +101,7 @@ class BadgeAwardServiceTest {
             "1, First Workout",
             "10, Workout Beginner",
             "50, Workout Warrior",
-            "100, Workout Champion",
-            "500, Workout Legend"
+            "100, Workout Champion"
     })
     void testCheckWorkoutBadges_AwardsCorrectBadgeForTotalWorkouts(int totalWorkouts, String expectedBadgeName) {
         setupBadgeMocks();

@@ -10,6 +10,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
+import org.springframework.security.oauth2.core.OAuth2Error;
 import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
@@ -25,7 +26,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     private final PasswordEncoder passwordEncoder;
 
     public CustomOAuth2UserService(UserRepository userRepository, RoleRepository roleRepository,
-            PasswordEncoder passwordEncoder) {
+                                   PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
@@ -37,7 +38,9 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
         String email = oAuth2User.getAttribute("email");
         if (email == null) {
-            throw new OAuth2AuthenticationException("Email not found from OAuth2 provider");
+            OAuth2Error oauth2Error = new OAuth2Error("email_not_found",
+                    "Email not found from OAuth2 provider", null);
+            throw new OAuth2AuthenticationException(oauth2Error, oauth2Error.getDescription());
         }
 
         User user = userRepository.findByEmail(email)
