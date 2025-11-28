@@ -1,0 +1,22 @@
+<div th:fragment="chat-widget">
+    <link rel="stylesheet" th:href="@{/css/chat.css}">
+
+    <button id="chat-toggle-btn" class="chat-toggle-btn">
+        💬
+    </button>
+
+    <div class="chat-container" id="chat-container" style="display: none;">
+        <div class="chat-header">
+            FitTrack AI Assistant
+            <button id="chat-close-btn" class="chat-close-btn">&times;</button>
+        </div>
+        <div class="chat-messages" id="chat-messages">
+            <div class="message bot">Hello! I'm your personal fitness assistant. How can I help you today?</div>
+        </div>
+        <div class="chat-input-area">
+            <input type="text" id="message-input" placeholder="Type your message...">
+            <button id="send-btn">➤</button>
+        </div>
+    </div>
+    <script th:src="@{/js/chat.js}"></script>
+</div>
