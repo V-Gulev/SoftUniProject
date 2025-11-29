@@ -38,8 +38,9 @@
                 </span>
             </div>
         </nav>
-        </nav>
-        <div th:replace="~{chat :: chat-widget}"></div>
+        <th:block sec:authorize="isAuthenticated()">
+            <div th:replace="~{chat :: chat-widget}"></div>
+        </th:block>
     </header>
 
     <!-- Badge Toast Notification (Top of Screen) -->
