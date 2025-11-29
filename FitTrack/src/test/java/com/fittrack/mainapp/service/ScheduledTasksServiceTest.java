@@ -24,6 +24,7 @@ class ScheduledTasksServiceTest {
 
     @Mock
     private GoalRepository mockGoalRepository;
+
     @Mock
     private UserRepository mockUserRepository;
 

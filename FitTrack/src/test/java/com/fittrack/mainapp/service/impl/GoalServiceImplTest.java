@@ -35,10 +35,13 @@ class GoalServiceImplTest {
 
     @Mock
     private GoalRepository mockGoalRepository;
+
     @Mock
     private UserRepository mockUserRepository;
+
     @Mock
     private BadgeAwardService mockBadgeAwardService;
+
     @Mock
     private BadgeNotificationService mockBadgeNotificationService;
 

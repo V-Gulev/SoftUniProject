@@ -25,8 +25,10 @@ class DashboardServiceImplTest {
 
     @Mock
     private GoalService mockGoalService;
+
     @Mock
     private WorkoutPlanService mockWorkoutPlanService;
+
     @Mock
     private WorkoutLogService mockWorkoutLogService;
 

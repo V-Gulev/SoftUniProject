@@ -32,8 +32,10 @@ class UserServiceImplTest {
 
     @Mock
     private UserRepository mockUserRepository;
+
     @Mock
     private RoleRepository mockRoleRepository;
+
     @Mock
     private PasswordEncoder mockPasswordEncoder;
 

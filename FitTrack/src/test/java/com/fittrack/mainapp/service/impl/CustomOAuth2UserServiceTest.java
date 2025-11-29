@@ -49,6 +49,7 @@ class CustomOAuth2UserServiceTest {
     private CustomOAuth2UserService service;
 
     private ClientRegistration clientRegistration;
+
     private OAuth2UserRequest oAuth2UserRequest;
 
     @BeforeEach

@@ -24,12 +24,16 @@ class ProfileServiceImplTest {
 
     @Mock
     private UserService mockUserService;
+
     @Mock
     private GoalService mockGoalService;
+
     @Mock
     private WorkoutPlanService mockWorkoutPlanService;
+
     @Mock
     private WorkoutLogService mockWorkoutLogService;
+
     @Mock
     private BadgeServiceClient mockBadgeServiceClient;
 

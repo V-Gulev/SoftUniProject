@@ -31,10 +31,13 @@ class WorkoutPlanServiceImplTest {
 
     @Mock
     private WorkoutPlanRepository mockWorkoutPlanRepository;
+
     @Mock
     private UserRepository mockUserRepository;
+
     @Mock
     private BadgeAwardService mockBadgeAwardService;
+
     @Mock
     private BadgeNotificationService mockBadgeNotificationService;
 

@@ -34,12 +34,16 @@ class WorkoutLogServiceImplTest {
 
     @Mock
     private UserRepository mockUserRepository;
+
     @Mock
     private WorkoutLogRepository mockWorkoutLogRepository;
+
     @Mock
     private WorkoutPlanRepository mockWorkoutPlanRepository;
+
     @Mock
     private BadgeAwardService mockBadgeAwardService;
+
     @Mock
     private BadgeNotificationService mockBadgeNotificationService;
 
