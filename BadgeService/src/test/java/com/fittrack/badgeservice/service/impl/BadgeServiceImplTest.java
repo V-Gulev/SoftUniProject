@@ -41,11 +41,11 @@ class BadgeServiceImplTest {
 
     @Test
     void testAwardBadge_ShouldCreateAndReturnBadge() {
-        BadgeAwardDto awardDto = new BadgeAwardDto("First Workout", "https://example.com/icon.png", userId);
+        BadgeAwardDto awardDto = new BadgeAwardDto("First Workout", "/images/icon.png", userId);
         Badge savedBadge = new Badge();
         savedBadge.setId(badgeId);
         savedBadge.setName("First Workout");
-        savedBadge.setIconUrl("https://example.com/icon.png");
+        savedBadge.setIconUrl("/images/icon.png");
         savedBadge.setUserId(userId);
 
         when(mockBadgeRepository.save(any(Badge.class))).thenReturn(savedBadge);
@@ -55,15 +55,47 @@ class BadgeServiceImplTest {
         assertNotNull(result);
         assertEquals(badgeId, result.getId());
         assertEquals("First Workout", result.getName());
-        assertEquals("https://example.com/icon.png", result.getIconUrl());
+        assertEquals("/images/icon.png", result.getIconUrl());
         assertEquals(userId, result.getUserId());
 
         ArgumentCaptor<Badge> badgeCaptor = ArgumentCaptor.forClass(Badge.class);
         verify(mockBadgeRepository).save(badgeCaptor.capture());
         Badge capturedBadge = badgeCaptor.getValue();
         assertEquals("First Workout", capturedBadge.getName());
-        assertEquals("https://example.com/icon.png", capturedBadge.getIconUrl());
+        assertEquals("/images/icon.png", capturedBadge.getIconUrl());
         assertEquals(userId, capturedBadge.getUserId());
+    }
+
+    @Test
+    void testAwardBadge_WithMaliciousName_ShouldSanitize() {
+        BadgeAwardDto awardDto = new BadgeAwardDto("<script>alert(1)</script>", "/images/icon.png", userId);
+        Badge savedBadge = new Badge();
+        savedBadge.setId(badgeId);
+        savedBadge.setName("&lt;script&gt;alert(1)&lt;/script&gt;");
+        savedBadge.setIconUrl("/images/icon.png");
+        savedBadge.setUserId(userId);
+
+        when(mockBadgeRepository.save(any(Badge.class))).thenReturn(savedBadge);
+
+        BadgeDto result = badgeService.awardBadge(awardDto);
+
+        assertEquals("&lt;script&gt;alert(1)&lt;/script&gt;", result.getName());
+
+        ArgumentCaptor<Badge> badgeCaptor = ArgumentCaptor.forClass(Badge.class);
+        verify(mockBadgeRepository).save(badgeCaptor.capture());
+        assertEquals("&lt;script&gt;alert(1)&lt;/script&gt;", badgeCaptor.getValue().getName());
+    }
+
+    @Test
+    void testAwardBadge_WithInvalidUrl_ShouldThrowException() {
+        BadgeAwardDto awardDto = new BadgeAwardDto("Badge", "javascript:alert(1)", userId);
+
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            badgeService.awardBadge(awardDto);
+        });
+
+        assertEquals("Invalid icon path: javascript:alert(1)", exception.getMessage());
+        verify(mockBadgeRepository, never()).save(any());
     }
 
     @Test

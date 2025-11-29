@@ -7,6 +7,7 @@ import com.fittrack.badgeservice.model.entity.Badge;
 import com.fittrack.badgeservice.repository.BadgeRepository;
 import com.fittrack.badgeservice.service.BadgeService;
 import org.springframework.stereotype.Service;
+import org.springframework.web.util.HtmlUtils;
 
 import java.util.List;
 import java.util.UUID;
@@ -23,9 +24,16 @@ public class BadgeServiceImpl implements BadgeService {
 
     @Override
     public BadgeDto awardBadge(BadgeAwardDto badgeAwardDto) {
+        String sanitizedName = HtmlUtils.htmlEscape(badgeAwardDto.getName());
+
+        String iconUrl = badgeAwardDto.getIconUrl();
+        if (!isValidIconPath(iconUrl)) {
+            throw new IllegalArgumentException("Invalid icon path: " + iconUrl);
+        }
+
         Badge newBadge = new Badge();
-        newBadge.setName(badgeAwardDto.getName());
-        newBadge.setIconUrl(badgeAwardDto.getIconUrl());
+        newBadge.setName(sanitizedName);
+        newBadge.setIconUrl(iconUrl);
         newBadge.setUserId(badgeAwardDto.getUserId());
 
         Badge savedBadge = badgeRepository.save(newBadge);
@@ -50,5 +58,9 @@ public class BadgeServiceImpl implements BadgeService {
 
     private BadgeDto mapToDto(Badge badge) {
         return new BadgeDto(badge.getId(), badge.getName(), badge.getIconUrl(), badge.getUserId());
+    }
+
+    private boolean isValidIconPath(String path) {
+        return path != null && path.matches("^/[a-zA-Z0-9/._-]+$");
     }
 }
