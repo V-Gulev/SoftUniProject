@@ -1,99 +1,81 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
+
 <head th:replace="~{fragments/_header :: head}">
     <title>Edit Workout Log</title>
 </head>
+
 <body>
-<header th:replace="~{fragments/_header :: header}"></header>
+    <header th:replace="~{fragments/_header :: header}"></header>
 
-<main class="container">
-    <div class="card slide-up" style="max-width: 600px; margin: 2rem auto; background: #0f172a; border-radius: 1rem; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04); border: 1px solid #334155; color: #e2e8f0;">
-        <div style="text-align: center; margin-bottom: 2rem; padding: 1.5rem; background: rgba(30, 41, 59, 0.5); border-radius: 1rem 1rem 0 0; border-bottom: 1px solid #334155;">
-            <h1 style="margin: 0; font-size: 2rem; font-weight: 600; color: #ffffff;">✏️ Edit Workout Log</h1>
-            <p style="margin: 0.5rem 0 0 0; opacity: 0.8; font-size: 1.1rem; color: #94a3b8;">Update your fitness progress</p>
-        </div>
-
-        <!-- Display Generic Error Message -->
-        <div th:if="${errorMessage}" style="padding: 0 2rem; margin-top: -1rem; margin-bottom: 1rem;">
-            <div class="alert alert-error" style="padding: 1rem; border-radius: 0.5rem; text-align: center; font-weight: 600;">
-                <span th:text="${errorMessage}">Error message</span>
+    <main class="container">
+        <div class="card slide-up" style="max-width: 700px; margin: 2rem auto;">
+            <div class="mb-4 text-center">
+                <h1>✏️ Edit Workout Log</h1>
+                <p>Update your fitness progress</p>
             </div>
-        </div>
 
-        <form th:action="@{/logs/edit/{id}(id=${logDto.id})}" th:method="post" th:object="${logDto}" style="padding: 0 2rem 2rem 2rem;">
-            <!-- Display Validation Errors Summary -->
-            <div th:if="${#fields.hasErrors('*')}" style="margin-bottom: 1rem;">
-                <div class="alert alert-error" style="padding: 1rem; border-radius: 0.5rem;">
-                    <p style="margin: 0 0 0.5rem 0; font-weight: 600;">Please fix the following errors:</p>
-                    <ul style="margin: 0; padding-left: 1.5rem; list-style-type: disc;">
-                        <li th:each="err : ${#fields.allErrors()}" th:text="${err}" style="margin-bottom: 0.25rem;"></li>
+            <div th:if="${errorMessage}" class="alert alert-error" th:text="${errorMessage}"></div>
+
+            <form th:action="@{/logs/edit/{id}(id=${logDto.id})}" th:method="post" th:object="${logDto}">
+                <div th:if="${#fields.hasErrors('*')}" class="alert alert-error">
+                    <p style="font-weight: 600; margin-bottom: 0.25rem;">Please fix the following errors:</p>
+                    <ul style="margin: 0; padding-left: 1.25rem;">
+                        <li th:each="err : ${#fields.allErrors()}" th:text="${err}"></li>
                     </ul>
                 </div>
-            </div>
-            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
-            <!-- We need to include the ID to post back, but it's already in the URL. We can also keep it in the DTO. -->
-            <input type="hidden" th:field="*{id}" />
 
-            <div style="margin-bottom: 1.5rem;">
-                <label for="date" style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: #cbd5e1; font-size: 1rem;">📅 Workout Date</label>
-                <input type="date" id="date" th:field="*{date}"
-                       style="width: 100%; padding: 0.75rem; border: 2px solid #334155; border-radius: 8px; font-size: 1rem; transition: border-color 0.2s ease; background-color: #1e293b; color: #e2e8f0; box-sizing: border-box;" />
-                <p class="alert alert-error" th:if="${#fields.hasErrors('date')}" th:errors="*{date}"></p>
-            </div>
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                <input type="hidden" th:field="*{id}" />
 
-            <div style="margin-bottom: 1.5rem;">
-                <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: #cbd5e1; font-size: 1rem;">⏱️ Workout Duration</label>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-                    <div>
-                        <label for="hours" style="display: block; margin-bottom: 0.25rem; font-size: 0.9rem; color: #94a3b8;">Hours</label>
-                        <input type="number" id="hours" th:field="*{hours}" min="0" max="12" placeholder="1"
-                               style="width: 100%; padding: 0.75rem; border: 2px solid #334155; border-radius: 8px; font-size: 1rem; transition: border-color 0.2s ease; background-color: #1e293b; color: #e2e8f0; box-sizing: border-box;" />
-                    </div>
-                    <div>
-                        <label for="minutes" style="display: block; margin-bottom: 0.25rem; font-size: 0.9rem; color: #94a3b8;">Minutes</label>
-                        <input type="number" id="minutes" th:field="*{minutes}" min="0" max="59" placeholder="30"
-                               style="width: 100%; padding: 0.75rem; border: 2px solid #334155; border-radius: 8px; font-size: 1rem; transition: border-color 0.2s ease; background-color: #1e293b; color: #e2e8f0; box-sizing: border-box;" />
-                    </div>
+                <div class="mb-4">
+                    <label for="date">📅 Workout Date</label>
+                    <input type="date" id="date" th:field="*{date}" />
+                    <p class="alert alert-error" th:if="${#fields.hasErrors('date')}" th:errors="*{date}"></p>
                 </div>
-                <!-- Validation errors for hours/minutes -->
-                <p class="alert alert-error" th:if="${#fields.hasErrors('hours')}" th:errors="*{hours}"></p>
-                <p class="alert alert-error" th:if="${#fields.hasErrors('minutes')}" th:errors="*{minutes}"></p>
-            </div>
 
-            <div style="margin-bottom: 1.5rem;">
-                <label for="description" style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: #cbd5e1; font-size: 1rem;">📝 Workout Description</label>
-                <textarea id="description" th:field="*{description}" placeholder="Describe your workout (e.g., 'Upper body strength training', 'Cardio session', 'Yoga flow')"
-                          style="width: 100%; padding: 0.75rem; border: 2px solid #334155; border-radius: 8px; font-size: 1rem; min-height: 100px; resize: vertical; transition: border-color 0.2s ease; background-color: #1e293b; color: #e2e8f0; box-sizing: border-box;"></textarea>
-                <p class="alert alert-error" th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></p>
-            </div>
+                <div class="mb-4">
+                    <label>⏱️ Workout Duration</label>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div>
+                            <label for="hours" style="font-size: 0.9rem; color: var(--text-muted);">Hours</label>
+                            <input type="number" id="hours" th:field="*{hours}" min="0" max="12" placeholder="1" />
+                        </div>
+                        <div>
+                            <label for="minutes" style="font-size: 0.9rem; color: var(--text-muted);">Minutes</label>
+                            <input type="number" id="minutes" th:field="*{minutes}" min="0" max="59" placeholder="30" />
+                        </div>
+                    </div>
+                    <p class="alert alert-error" th:if="${#fields.hasErrors('hours')}" th:errors="*{hours}"></p>
+                    <p class="alert alert-error" th:if="${#fields.hasErrors('minutes')}" th:errors="*{minutes}"></p>
+                </div>
 
-            <div style="margin-bottom: 2rem;">
-                <label for="workoutPlanId" style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: #cbd5e1; font-size: 1rem;">📋 Workout Plan (Optional)</label>
-                <select id="workoutPlanId" th:field="*{workoutPlanId}"
-                        style="width: 100%; padding: 0.75rem; border: 2px solid #334155; border-radius: 8px; font-size: 1rem; transition: border-color 0.2s ease; background-color: #1e293b; color: #e2e8f0; box-sizing: border-box;">
-                    <option value="">Select a workout plan (optional)</option>
-                    <option th:each="plan : ${workoutPlans}" th:value="${plan.id}" th:text="${plan.name}">Plan Name</option>
-                </select>
-                <p class="alert alert-error" th:if="${#fields.hasErrors('workoutPlanId')}" th:errors="*{workoutPlanId}"></p>
-            </div>
+                <div class="mb-4">
+                    <label for="description">📝 Workout Description</label>
+                    <textarea id="description" th:field="*{description}" placeholder="Describe your workout..."
+                        style="min-height: 100px; resize: vertical;"></textarea>
+                    <p class="alert alert-error" th:if="${#fields.hasErrors('description')}" th:errors="*{description}">
+                    </p>
+                </div>
 
-            <div style="margin-top: 2rem; display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center;">
-                <button type="submit" class="btn btn-primary"
-                        style="padding: 0.875rem 2rem; font-weight: 600; border-radius: 8px; font-size: 1.1rem; min-width: 140px; background: #059669; color: #ffffff; border: none; cursor: pointer; transition: background-color 0.3s ease;"
-                        onmouseover="this.style.backgroundColor='#047857'"
-                        onmouseout="this.style.backgroundColor='#059669'">
-                    💾 Save Changes
-                </button>
-                <a th:href="@{/logs/history}" class="btn btn-outline"
-                   style="padding: 0.875rem 2rem; font-weight: 600; border-radius: 8px; font-size: 1.1rem; min-width: 140px; background: #334155; color: #e2e8f0; text-decoration: none; display: inline-block; text-align: center; border: 1px solid #475569; transition: background-color 0.3s ease;"
-                   onmouseover="this.style.backgroundColor='#475569'"
-                   onmouseout="this.style.backgroundColor='#334155'">
-                    ← Cancel
-                </a>
-            </div>
-        </form>
-    </div>
-</main>
+                <div class="mb-4">
+                    <label for="workoutPlanId">📋 Workout Plan (Optional)</label>
+                    <select id="workoutPlanId" th:field="*{workoutPlanId}">
+                        <option value="">Select a workout plan (optional)</option>
+                        <option th:each="plan : ${workoutPlans}" th:value="${plan.id}" th:text="${plan.name}">Plan Name
+                        </option>
+                    </select>
+                    <p class="alert alert-error" th:if="${#fields.hasErrors('workoutPlanId')}"
+                        th:errors="*{workoutPlanId}"></p>
+                </div>
+
+                <div class="mt-4" style="display: flex; gap: 1rem; justify-content: flex-end;">
+                    <a th:href="@{/logs/history}" class="btn btn-outline">Cancel</a>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </main>
 </body>
-</html>
 
+</html>

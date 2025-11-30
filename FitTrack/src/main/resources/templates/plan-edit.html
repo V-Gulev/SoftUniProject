@@ -8,126 +8,85 @@
 <body>
     <header th:replace="~{fragments/_header :: header}"></header>
     <main class="container">
-        <div class="card slide-up"
-            style="max-width: 600px; margin: 2rem auto; background: #0f172a; border-radius: 1rem; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04); border: 1px solid #334155; color: #e2e8f0;">
-            <div
-                style="text-align: center; margin-bottom: 2rem; padding: 1.5rem; background: rgba(30, 41, 59, 0.5); border-radius: 1rem 1rem 0 0; border-bottom: 1px solid #334155;">
-                <h1 style="margin: 0; font-size: 2rem; font-weight: 600; color: #ffffff;">✏️ Edit Workout Plan</h1>
-                <p style="margin: 0.5rem 0 0 0; opacity: 0.8; font-size: 1.1rem; color: #94a3b8;">Update your workout
-                    plan details</p>
+        <div class="card slide-up" style="max-width: 900px; margin: 2rem auto;">
+            <div class="mb-4">
+                <h1>Edit Workout Plan</h1>
+                <p>Update your workout plan details.</p>
             </div>
 
-            <!-- Display Generic Error Message -->
-            <div th:if="${errorMessage}" style="padding: 0 2rem; margin-top: -1rem; margin-bottom: 1rem;">
-                <div class="alert alert-error"
-                    style="padding: 1rem; border-radius: 0.5rem; text-align: center; font-weight: 600;">
-                    <span th:text="${errorMessage}">Error message</span>
-                </div>
-            </div>
+            <div th:if="${errorMessage}" class="alert alert-error" th:text="${errorMessage}"></div>
 
-            <form th:action="@{/workout-plans/edit/{id}(id=${planDto.id})}" th:method="post" th:object="${planDto}"
-                style="padding: 0 2rem 2rem 2rem;">
-                <!-- Display Validation Errors Summary -->
-                <div th:if="${#fields.hasErrors('*')}" style="margin-bottom: 1rem;">
-                    <div class="alert alert-error" style="padding: 1rem; border-radius: 0.5rem;">
-                        <p style="margin: 0 0 0.5rem 0; font-weight: 600;">Please fix the following errors:</p>
-                        <ul style="margin: 0; padding-left: 1.5rem; list-style-type: disc;">
-                            <li th:each="err : ${#fields.allErrors()}" th:text="${err}" style="margin-bottom: 0.25rem;">
-                            </li>
-                        </ul>
-                    </div>
+            <form th:action="@{/workout-plans/edit/{id}(id=${planDto.id})}" th:method="post" th:object="${planDto}">
+                <div th:if="${#fields.hasErrors('*')}" class="alert alert-error">
+                    <p style="font-weight: 600; margin-bottom: 0.25rem;">Please fix the following errors:</p>
+                    <ul style="margin: 0; padding-left: 1.25rem;">
+                        <li th:each="err : ${#fields.allErrors()}" th:text="${err}"></li>
+                    </ul>
                 </div>
+
                 <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
                 <input type="hidden" th:field="*{id}" />
 
-                <div style="margin-bottom: 1.5rem;">
-                    <label for="name"
-                        style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: #cbd5e1; font-size: 1rem;">📋
-                        Plan Name</label>
-                    <input type="text" id="name" th:field="*{name}" placeholder="e.g., Push/Pull/Legs"
-                        style="width: 100%; padding: 0.75rem; border: 2px solid #334155; border-radius: 8px; font-size: 1rem; transition: border-color 0.2s ease; background-color: #1e293b; color: #e2e8f0; box-sizing: border-box;" />
+                <div class="mb-4">
+                    <label for="name">Plan Name</label>
+                    <input type="text" id="name" th:field="*{name}" placeholder="e.g., Push/Pull/Legs" />
                     <p class="alert alert-error" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></p>
                 </div>
 
-                <div style="margin-bottom: 1.5rem;">
-                    <label for="description"
-                        style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: #cbd5e1; font-size: 1rem;">📝
-                        Overview</label>
+                <div class="mb-4">
+                    <label for="description">Overview</label>
                     <textarea id="description" th:field="*{description}" placeholder="High-level plan overview"
-                        style="width: 100%; padding: 0.75rem; border: 2px solid #334155; border-radius: 8px; font-size: 1rem; min-height: 100px; resize: none; transition: border-color 0.2s ease; background-color: #1e293b; color: #e2e8f0; box-sizing: border-box;"></textarea>
+                        style="resize: none; min-height: 100px;"></textarea>
                     <p class="alert alert-error" th:if="${#fields.hasErrors('description')}" th:errors="*{description}">
                     </p>
                 </div>
 
-                <div style="margin-bottom: 1.5rem;">
-                    <h2 style="font-size: 1.25rem; font-weight: 600; color: #ffffff; margin-bottom: 1rem;">📅 Weekly
-                        Schedule</h2>
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1rem;">
-                        <div style="background: #1e293b; padding: 1rem; border-radius: 8px; border: 1px solid #334155;">
-                            <label for="monday"
-                                style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: #cbd5e1; font-size: 0.9rem;">Monday</label>
-                            <textarea id="monday" th:field="*{descriptionMonday}"
-                                placeholder="Workout details for Monday"
-                                style="width: 100%; padding: 0.75rem; border: 2px solid #334155; border-radius: 8px; font-size: 0.9rem; min-height: 80px; resize: none; transition: border-color 0.2s ease; background-color: #0f172a; color: #e2e8f0; box-sizing: border-box;"></textarea>
-                        </div>
-                        <div style="background: #1e293b; padding: 1rem; border-radius: 8px; border: 1px solid #334155;">
-                            <label for="tuesday"
-                                style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: #cbd5e1; font-size: 0.9rem;">Tuesday</label>
-                            <textarea id="tuesday" th:field="*{descriptionTuesday}"
-                                placeholder="Workout details for Tuesday"
-                                style="width: 100%; padding: 0.75rem; border: 2px solid #334155; border-radius: 8px; font-size: 0.9rem; min-height: 80px; resize: none; transition: border-color 0.2s ease; background-color: #0f172a; color: #e2e8f0; box-sizing: border-box;"></textarea>
-                        </div>
-                        <div style="background: #1e293b; padding: 1rem; border-radius: 8px; border: 1px solid #334155;">
-                            <label for="wednesday"
-                                style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: #cbd5e1; font-size: 0.9rem;">Wednesday</label>
-                            <textarea id="wednesday" th:field="*{descriptionWednesday}"
-                                placeholder="Workout details for Wednesday"
-                                style="width: 100%; padding: 0.75rem; border: 2px solid #334155; border-radius: 8px; font-size: 0.9rem; min-height: 80px; resize: none; transition: border-color 0.2s ease; background-color: #0f172a; color: #e2e8f0; box-sizing: border-box;"></textarea>
-                        </div>
-                        <div style="background: #1e293b; padding: 1rem; border-radius: 8px; border: 1px solid #334155;">
-                            <label for="thursday"
-                                style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: #cbd5e1; font-size: 0.9rem;">Thursday</label>
-                            <textarea id="thursday" th:field="*{descriptionThursday}"
-                                placeholder="Workout details for Thursday"
-                                style="width: 100%; padding: 0.75rem; border: 2px solid #334155; border-radius: 8px; font-size: 0.9rem; min-height: 80px; resize: none; transition: border-color 0.2s ease; background-color: #0f172a; color: #e2e8f0; box-sizing: border-box;"></textarea>
-                        </div>
-                        <div style="background: #1e293b; padding: 1rem; border-radius: 8px; border: 1px solid #334155;">
-                            <label for="friday"
-                                style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: #cbd5e1; font-size: 0.9rem;">Friday</label>
-                            <textarea id="friday" th:field="*{descriptionFriday}"
-                                placeholder="Workout details for Friday"
-                                style="width: 100%; padding: 0.75rem; border: 2px solid #334155; border-radius: 8px; font-size: 0.9rem; min-height: 80px; resize: none; transition: border-color 0.2s ease; background-color: #0f172a; color: #e2e8f0; box-sizing: border-box;"></textarea>
-                        </div>
-                        <div style="background: #1e293b; padding: 1rem; border-radius: 8px; border: 1px solid #334155;">
-                            <label for="saturday"
-                                style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: #cbd5e1; font-size: 0.9rem;">Saturday</label>
-                            <textarea id="saturday" th:field="*{descriptionSaturday}"
-                                placeholder="Workout details for Saturday"
-                                style="width: 100%; padding: 0.75rem; border: 2px solid #334155; border-radius: 8px; font-size: 0.9rem; min-height: 80px; resize: none; transition: border-color 0.2s ease; background-color: #0f172a; color: #e2e8f0; box-sizing: border-box;"></textarea>
-                        </div>
-                        <div style="background: #1e293b; padding: 1rem; border-radius: 8px; border: 1px solid #334155;">
-                            <label for="sunday"
-                                style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: #cbd5e1; font-size: 0.9rem;">Sunday</label>
-                            <textarea id="sunday" th:field="*{descriptionSunday}"
-                                placeholder="Workout details for Sunday"
-                                style="width: 100%; padding: 0.75rem; border: 2px solid #334155; border-radius: 8px; font-size: 0.9rem; min-height: 80px; resize: none; transition: border-color 0.2s ease; background-color: #0f172a; color: #e2e8f0; box-sizing: border-box;"></textarea>
-                        </div>
+                <h2 class="mb-4">Weekly Schedule</h2>
+                <div class="list-cards" style="grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));">
+                    <div class="goal-card">
+                        <label for="monday" style="color: var(--primary-color);">Monday</label>
+                        <textarea id="monday" th:field="*{descriptionMonday}" placeholder="Workout details for Monday"
+                            style="resize: none; min-height: 120px;"></textarea>
+                    </div>
+                    <div class="goal-card">
+                        <label for="tuesday" style="color: var(--primary-color);">Tuesday</label>
+                        <textarea id="tuesday" th:field="*{descriptionTuesday}"
+                            placeholder="Workout details for Tuesday"
+                            style="resize: none; min-height: 120px;"></textarea>
+                    </div>
+                    <div class="goal-card">
+                        <label for="wednesday" style="color: var(--primary-color);">Wednesday</label>
+                        <textarea id="wednesday" th:field="*{descriptionWednesday}"
+                            placeholder="Workout details for Wednesday"
+                            style="resize: none; min-height: 120px;"></textarea>
+                    </div>
+                    <div class="goal-card">
+                        <label for="thursday" style="color: var(--primary-color);">Thursday</label>
+                        <textarea id="thursday" th:field="*{descriptionThursday}"
+                            placeholder="Workout details for Thursday"
+                            style="resize: none; min-height: 120px;"></textarea>
+                    </div>
+                    <div class="goal-card">
+                        <label for="friday" style="color: var(--primary-color);">Friday</label>
+                        <textarea id="friday" th:field="*{descriptionFriday}" placeholder="Workout details for Friday"
+                            style="resize: none; min-height: 120px;"></textarea>
+                    </div>
+                    <div class="goal-card">
+                        <label for="saturday" style="color: var(--primary-color);">Saturday</label>
+                        <textarea id="saturday" th:field="*{descriptionSaturday}"
+                            placeholder="Workout details for Saturday"
+                            style="resize: none; min-height: 120px;"></textarea>
+                    </div>
+                    <div class="goal-card">
+                        <label for="sunday" style="color: var(--primary-color);">Sunday</label>
+                        <textarea id="sunday" th:field="*{descriptionSunday}" placeholder="Workout details for Sunday"
+                            style="resize: none; min-height: 120px;"></textarea>
                     </div>
                 </div>
 
-                <div style="margin-top: 2rem; display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center;">
-                    <button type="submit" class="btn btn-primary"
-                        style="padding: 0.875rem 2rem; font-weight: 600; border-radius: 8px; font-size: 1.1rem; min-width: 140px; background: #059669; color: #ffffff; border: none; cursor: pointer; transition: background-color 0.3s ease;"
-                        onmouseover="this.style.backgroundColor='#047857'"
-                        onmouseout="this.style.backgroundColor='#059669'">
-                        💾 Save Changes
-                    </button>
-                    <a th:href="@{/workout-plans}" class="btn btn-outline"
-                        style="padding: 0.875rem 2rem; font-weight: 600; border-radius: 8px; font-size: 1.1rem; min-width: 140px; background: #334155; color: #e2e8f0; text-decoration: none; display: inline-block; text-align: center; border: 1px solid #475569; transition: background-color 0.3s ease;"
-                        onmouseover="this.style.backgroundColor='#475569'"
-                        onmouseout="this.style.backgroundColor='#334155'">
-                        ← Cancel
-                    </a>
+                <div class="mt-4" style="display: flex; gap: 1rem; justify-content: flex-end;">
+                    <a th:href="@{/workout-plans}" class="btn btn-outline">Cancel</a>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
                 </div>
             </form>
         </div>

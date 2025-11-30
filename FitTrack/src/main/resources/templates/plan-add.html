@@ -6,65 +6,73 @@
 <body>
     <header th:replace="~{fragments/_header :: header}"></header>
     <main class="container">
-        <div class="card slide-up">
-            <h1>Add a New Workout Plan</h1>
+        <div class="card slide-up" style="max-width: 900px; margin: 2rem auto;">
+            <div class="mb-4">
+                <h1>Add a New Workout Plan</h1>
+                <p>Create a structured plan to reach your goals.</p>
+            </div>
+
             <form th:action="@{/workout-plans/add}" th:method="post" th:object="${planDto}">
                 <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
-                <div>
+
+                <div class="mb-4">
                     <label for="name">Plan Name</label>
                     <input type="text" id="name" th:field="*{name}" placeholder="e.g., Push/Pull/Legs" />
                     <p class="alert alert-error" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></p>
                 </div>
-                <div>
+
+                <div class="mb-4">
                     <label for="description">Overview</label>
                     <textarea id="description" th:field="*{description}" placeholder="High-level plan overview"
-                        style="resize: none;"></textarea>
+                        style="resize: none; min-height: 100px;"></textarea>
                 </div>
 
-                <h2>Weekly Schedule</h2>
-                <div class="list-cards" style="grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));">
+                <h2 class="mb-4">Weekly Schedule</h2>
+                <div class="list-cards" style="grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));">
                     <div class="goal-card">
-                        <label for="monday">Monday</label>
+                        <label for="monday" style="color: var(--primary-color);">Monday</label>
                         <textarea id="monday" th:field="*{descriptionMonday}" placeholder="Workout details for Monday"
-                            style="resize: none;"></textarea>
+                            style="resize: none; min-height: 120px;"></textarea>
                     </div>
                     <div class="goal-card">
-                        <label for="tuesday">Tuesday</label>
+                        <label for="tuesday" style="color: var(--primary-color);">Tuesday</label>
                         <textarea id="tuesday" th:field="*{descriptionTuesday}"
-                            placeholder="Workout details for Tuesday" style="resize: none;"></textarea>
+                            placeholder="Workout details for Tuesday"
+                            style="resize: none; min-height: 120px;"></textarea>
                     </div>
                     <div class="goal-card">
-                        <label for="wednesday">Wednesday</label>
+                        <label for="wednesday" style="color: var(--primary-color);">Wednesday</label>
                         <textarea id="wednesday" th:field="*{descriptionWednesday}"
-                            placeholder="Workout details for Wednesday" style="resize: none;"></textarea>
+                            placeholder="Workout details for Wednesday"
+                            style="resize: none; min-height: 120px;"></textarea>
                     </div>
                     <div class="goal-card">
-                        <label for="thursday">Thursday</label>
+                        <label for="thursday" style="color: var(--primary-color);">Thursday</label>
                         <textarea id="thursday" th:field="*{descriptionThursday}"
-                            placeholder="Workout details for Thursday" style="resize: none;"></textarea>
+                            placeholder="Workout details for Thursday"
+                            style="resize: none; min-height: 120px;"></textarea>
                     </div>
                     <div class="goal-card">
-                        <label for="friday">Friday</label>
+                        <label for="friday" style="color: var(--primary-color);">Friday</label>
                         <textarea id="friday" th:field="*{descriptionFriday}" placeholder="Workout details for Friday"
-                            style="resize: none;"></textarea>
+                            style="resize: none; min-height: 120px;"></textarea>
                     </div>
                     <div class="goal-card">
-                        <label for="saturday">Saturday</label>
+                        <label for="saturday" style="color: var(--primary-color);">Saturday</label>
                         <textarea id="saturday" th:field="*{descriptionSaturday}"
-                            placeholder="Workout details for Saturday" style="resize: none;"></textarea>
+                            placeholder="Workout details for Saturday"
+                            style="resize: none; min-height: 120px;"></textarea>
                     </div>
                     <div class="goal-card">
-                        <label for="sunday">Sunday</label>
+                        <label for="sunday" style="color: var(--primary-color);">Sunday</label>
                         <textarea id="sunday" th:field="*{descriptionSunday}" placeholder="Workout details for Sunday"
-                            style="resize: none;"></textarea>
+                            style="resize: none; min-height: 120px;"></textarea>
                     </div>
                 </div>
 
-                <div style="margin-top: 1rem;">
-                    <button type="submit" class="btn btn-primary"
-                        style="background: #10b981; color: #064e3b; font-weight: 600; border: none; cursor: pointer;">Create
-                        Plan</button>
-                    <a th:href="@{/workout-plans}" class="btn btn-outline" style="margin-left:.5rem;">Back</a>
+                <div class="mt-4" style="display: flex; gap: 1rem; justify-content: flex-end;">
+                    <a th:href="@{/workout-plans}" class="btn btn-outline">Cancel</a>
+                    <button type="submit" class="btn btn-primary">Create Plan</button>
                 </div>
             </form>
         </div>

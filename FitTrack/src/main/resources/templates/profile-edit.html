@@ -1,112 +1,92 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{fragments/_header :: head}">
-</head>
-<body style="background-color: #0b1120; color: #cbd5e1;"> <!-- Dark theme body -->
-<header th:replace="~{fragments/_header :: header}"></header>
 
-<main class="container">
+<head th:replace="~{fragments/_header :: head}"></head>
 
-    <div style="max-width: 700px; margin: 2rem auto;">
-        <!-- Card -->
-        <div style="background: #1e293b; border-radius: 1rem; border: 1px solid #334155; overflow: hidden;">
+<body>
+    <header th:replace="~{fragments/_header :: header}"></header>
 
-            <!-- Card Header -->
-            <div style="padding: 1.5rem 2rem; border-bottom: 1px solid #334155; background: rgba(30, 41, 59, 0.5);">
-                <h1 style="color: #ffffff; font-size: 1.75rem; font-weight: 600; margin: 0;">Edit Profile</h1>
-                <p style="color: #94a3b8; margin: 0.25rem 0 0 0;">Update your account information.</p>
+    <main class="container">
+        <div class="card slide-up" style="max-width: 700px; margin: 2rem auto;">
+            <div class="mb-4">
+                <h1>Edit Profile</h1>
+                <p>Update your account information.</p>
             </div>
 
-            <!-- Form -->
-            <form th:action="@{/profile/edit}" th:method="post" th:object="${profileDto}" style="padding: 2rem;">
+            <div th:if="${#fields.hasErrors('*')}" class="alert alert-error">
+                <p style="font-weight: 600; margin-bottom: 0.25rem;">Please fix the errors below:</p>
+                <ul style="margin: 0; padding-left: 1.25rem;">
+                    <li th:each="err : ${#fields.allErrors()}" th:text="${err}"></li>
+                </ul>
+            </div>
+            <div th:if="${errorMessage}" class="alert alert-error">
+                <span th:text="${errorMessage}"></span>
+            </div>
+            <div th:if="${successMessage}" class="alert alert-success">
+                <span th:text="${successMessage}"></span>
+            </div>
+
+            <form th:action="@{/profile/edit}" th:method="post" th:object="${profileDto}">
                 <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
 
-                <!-- Error Messages -->
-                <div th:if="${#fields.hasErrors('*')}" class="alert alert-danger" style="background: #ef4444; color: #7f1d1d; padding: 1rem; border-radius: 0.5rem; margin-bottom: 1.5rem; border: 1px solid #dc2626;">
-                    <p style="margin: 0; font-weight: 600; color: #fecaca;">Please fix the errors below:</p>
-                    <ul style="margin: 0.5rem 0 0 1.5rem; padding: 0;">
-                        <li th:each="err : ${#fields.allErrors()}" th:text="${err}" style="color: #fecaca; margin-bottom: 0.25rem;"></li>
-                    </ul>
-                </div>
-                <div th:if="${errorMessage}" class="alert alert-danger" style="background: #ef4444; color: #7f1d1d; padding: 1rem; border-radius: 0.5rem; margin-bottom: 1.5rem; border: 1px solid #dc2626;">
-                    <span style="color: #fecaca;" th:text="${errorMessage}"></span>
-                </div>
-                <div th:if="${successMessage}" class="alert alert-success" style="background: #10b981; color: #065f46; padding: 1rem; border-radius: 0.5rem; margin-bottom: 1.5rem; border: 1px solid #059669;">
-                    <span style="color: #d1fae5;" th:text="${successMessage}"></span>
-                </div>
-
-                <!-- Account Details Section -->
-                <div style="margin-bottom: 2rem;">
-                    <h2 style="color: #ffffff; font-size: 1.25rem; font-weight: 600; margin: 0 0 1.5rem 0; padding-bottom: 0.75rem; border-bottom: 1px solid #334155;">
+                <div class="mb-4">
+                    <h2
+                        style="font-size: 1.25rem; margin-bottom: 1.5rem; padding-bottom: 0.75rem; border-bottom: 1px solid var(--border-color);">
                         Account Details
                     </h2>
 
-                    <!-- Username -->
-                    <div style="margin-bottom: 1.5rem;">
-                        <label for="username" style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: #cbd5e1;">Username</label>
-                        <input type="text" id="username" th:field="*{username}" placeholder="Enter your username"
-                               style="width: 100%; background: #0f172a; border: 1px solid #334155; color: #ffffff; padding: 0.75rem 1rem; border-radius: 0.5rem; font-size: 1rem; box-sizing: border-box;" />
-                        <p class="error" th:if="${#fields.hasErrors('username')}" 
-                           style="color: #fca5a5; font-size: 0.875rem; margin: 0.5rem 0 0 0;" 
-                           th:errors="*{username}"></p>
+                    <div class="mb-4">
+                        <label for="username">Username</label>
+                        <input type="text" id="username" th:field="*{username}" placeholder="Enter your username" />
+                        <p class="alert alert-error" th:if="${#fields.hasErrors('username')}" th:errors="*{username}">
+                        </p>
                     </div>
 
-                    <!-- Email -->
-                    <div style="margin-bottom: 1.5rem;">
-                        <label for="email" style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: #cbd5e1;">Email</label>
-                        <input type="email" id="email" th:field="*{email}" placeholder="Enter your email"
-                               style="width: 100%; background: #0f172a; border: 1px solid #334155; color: #ffffff; padding: 0.75rem 1rem; border-radius: 0.5rem; font-size: 1rem; box-sizing: border-box;" />
-                        <p class="error" th:if="${#fields.hasErrors('email')}" 
-                           style="color: #fca5a5; font-size: 0.875rem; margin: 0.5rem 0 0 0;" 
-                           th:errors="*{email}"></p>
+                    <div class="mb-4">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" th:field="*{email}" placeholder="Enter your email" />
+                        <p class="alert alert-error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></p>
                     </div>
                 </div>
 
-                <!-- Change Password Section -->
-                <div style="margin-bottom: 2rem;">
-                    <h2 style="color: #ffffff; font-size: 1.25rem; font-weight: 600; margin: 0 0 1.5rem 0; padding-bottom: 0.75rem; border-bottom: 1px solid #334155;">
+                <div class="mb-4">
+                    <h2
+                        style="font-size: 1.25rem; margin-bottom: 1rem; padding-bottom: 0.75rem; border-bottom: 1px solid var(--border-color);">
                         Change Password
-                        <span style="color: #94a3b8; font-size: 0.875rem; font-weight: 400;">(optional)</span>
+                        <span style="color: var(--text-muted); font-size: 0.875rem; font-weight: 400;">(optional)</span>
                     </h2>
-                    <p style="color: #94a3b8; font-size: 0.875rem; margin: 0 0 1rem 0;">
+                    <p style="color: var(--text-muted); font-size: 0.875rem; margin-bottom: 1.5rem;">
                         Leave password fields empty if you don't want to change your password.
                     </p>
 
-                    <!-- Old Password -->
-                    <div style="margin-bottom: 1.5rem;">
-                        <label for="oldPassword" style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: #cbd5e1;">Current Password</label>
-                        <input type="password" id="oldPassword" th:field="*{oldPassword}" placeholder="Enter your current password"
-                               style="width: 100%; background: #0f172a; border: 1px solid #334155; color: #ffffff; padding: 0.75rem 1rem; border-radius: 0.5rem; font-size: 1rem; box-sizing: border-box;" />
+                    <div class="mb-4">
+                        <label for="oldPassword">Current Password</label>
+                        <input type="password" id="oldPassword" th:field="*{oldPassword}"
+                            placeholder="Enter your current password" />
                     </div>
 
-                    <!-- New Password -->
-                    <div style="margin-bottom: 1.5rem;">
-                        <label for="newPassword" style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: #cbd5e1;">New Password</label>
-                        <input type="password" id="newPassword" th:field="*{newPassword}" placeholder="Enter new password (min 5 characters)"
-                               style="width: 100%; background: #0f172a; border: 1px solid #334155; color: #ffffff; padding: 0.75rem 1rem; border-radius: 0.5rem; font-size: 1rem; box-sizing: border-box;" />
-                        <p class="error" th:if="${#fields.hasErrors('newPassword')}" 
-                           style="color: #fca5a5; font-size: 0.875rem; margin: 0.5rem 0 0 0;" 
-                           th:errors="*{newPassword}"></p>
+                    <div class="mb-4">
+                        <label for="newPassword">New Password</label>
+                        <input type="password" id="newPassword" th:field="*{newPassword}"
+                            placeholder="Enter new password (min 5 characters)" />
+                        <p class="alert alert-error" th:if="${#fields.hasErrors('newPassword')}"
+                            th:errors="*{newPassword}"></p>
                     </div>
 
-                    <!-- Confirm New Password -->
-                    <div style="margin-bottom: 1.5rem;">
-                        <label for="confirmNewPassword" style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: #cbd5e1;">Confirm New Password</label>
-                        <input type="password" id="confirmNewPassword" th:field="*{confirmNewPassword}" placeholder="Confirm your new password"
-                               style="width: 100%; background: #0f172a; border: 1px solid #334155; color: #ffffff; padding: 0.75rem 1rem; border-radius: 0.5rem; font-size: 1rem; box-sizing: border-box;" />
+                    <div class="mb-4">
+                        <label for="confirmNewPassword">Confirm New Password</label>
+                        <input type="password" id="confirmNewPassword" th:field="*{confirmNewPassword}"
+                            placeholder="Confirm your new password" />
                     </div>
                 </div>
 
-                <!-- Buttons -->
-                <div style="display: flex; gap: 1rem; justify-content: flex-end;">
-                    <a th:href="@{/profile}" class="btn btn-outline" style="padding: 0.75rem 1.5rem; text-decoration: none;">Cancel</a>
-                    <button type="submit" class="btn btn-primary" style="background: #10b981; color: #064e3b; font-weight: 600; text-decoration: none;">
-                        Update Profile
-                    </button>
+                <div class="mt-4" style="display: flex; gap: 1rem; justify-content: flex-end;">
+                    <a th:href="@{/profile}" class="btn btn-outline">Cancel</a>
+                    <button type="submit" class="btn btn-primary">Update Profile</button>
                 </div>
             </form>
         </div>
-    </div>
-</main>
+    </main>
 </body>
+
 </html>

@@ -6,45 +6,65 @@
 <body>
     <header th:replace="~{fragments/_header :: header}"></header>
     <main class="container" sec:authorize="isAnonymous()">
-        <section class="card hero slide-up">
+        <section class="card slide-up mb-4"
+            style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: center; padding: 3rem;">
             <div>
-                <h1 class="title">Level up your fitness journey</h1>
-                <p class="subtitle">Create goals, track workouts, and stay motivated with gentle insights and badges.
+                <h1
+                    style="font-size: 3rem; line-height: 1.2; margin-bottom: 1.5rem; background: linear-gradient(to right, #fff, #94a3b8); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+                    Level up your fitness journey
+                </h1>
+                <p style="font-size: 1.25rem; color: var(--text-muted); margin-bottom: 2rem; line-height: 1.6;">
+                    Create goals, track workouts, and stay motivated with gentle insights and badges.
                 </p>
-                <div class="stagger">
-                    <a th:href="@{/register}" class="btn btn-primary">Get Started</a>
-                    <a th:href="@{/login}" class="btn btn-outline" style="margin-left: .5rem;">I already have an
-                        account</a>
+                <div class="stagger" style="display: flex; gap: 1rem;">
+                    <a th:href="@{/register}" class="btn btn-primary"
+                        style="padding: 0.875rem 2rem; font-size: 1.1rem;">Get Started</a>
+                    <a th:href="@{/login}" class="btn btn-outline"
+                        style="padding: 0.875rem 2rem; font-size: 1.1rem;">Sign In</a>
                 </div>
             </div>
-            <div class="hero-illustration" aria-hidden="true">
+            <div class="hero-illustration" aria-hidden="true" style="position: relative;">
+                <div
+                    style="position: absolute; inset: 0; background: radial-gradient(circle at center, rgba(16, 185, 129, 0.2), transparent 70%); filter: blur(40px); z-index: 0;">
+                </div>
                 <img th:src="@{/images/fittrack-app-illustration.png}" alt="FitTrack app illustration"
-                    style="width: 100%; height: 100%; object-fit: cover; border-radius: 0.5rem;">
+                    style="width: 100%; height: auto; border-radius: 1rem; position: relative; z-index: 1; box-shadow: 0 20px 40px rgba(0,0,0,0.3); border: 1px solid var(--border-color);">
             </div>
         </section>
 
-        <section class="card slide-up">
-            <h2>Why FitTrack?</h2>
-            <div class="list-cards" style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));">
-                <div class="goal-card">
-                    <h3>Track Goals</h3>
-                    <p class="meta">Stay focused with clear targets</p>
+        <section class="card slide-up mb-4">
+            <div class="text-center mb-4">
+                <h2>Why FitTrack?</h2>
+                <p style="color: var(--text-muted);">Everything you need to stay consistent</p>
+            </div>
+
+            <div class="list-cards" style="grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));">
+                <div class="goal-card" style="text-align: center; padding: 2rem;">
+                    <div style="font-size: 2.5rem; margin-bottom: 1rem;">🎯</div>
+                    <h3 style="margin-bottom: 0.5rem;">Track Goals</h3>
+                    <p class="meta">Set clear targets and monitor your progress towards them with ease.</p>
                 </div>
-                <div class="goal-card">
-                    <h3>Smart Plans</h3>
-                    <p class="meta">Build routines that fit you</p>
+                <div class="goal-card" style="text-align: center; padding: 2rem;">
+                    <div style="font-size: 2.5rem; margin-bottom: 1rem;">📅</div>
+                    <h3 style="margin-bottom: 0.5rem;">Smart Plans</h3>
+                    <p class="meta">Create and follow weekly workout routines that fit your schedule.</p>
                 </div>
-                <div class="goal-card">
-                    <h3>Progress</h3>
-                    <p class="meta">See improvements over time</p>
+                <div class="goal-card" style="text-align: center; padding: 2rem;">
+                    <div style="font-size: 2.5rem; margin-bottom: 1rem;">📈</div>
+                    <h3 style="margin-bottom: 0.5rem;">Visual Progress</h3>
+                    <p class="meta">See your improvements over time with beautiful charts and stats.</p>
                 </div>
             </div>
         </section>
 
-        <section class="card slide-up">
-            <h2>Ready to begin?</h2>
-            <a th:href="@{/register}" class="btn btn-primary">Create your account</a>
-            <a th:href="@{/login}" class="btn btn-outline" style="margin-left:.5rem;">Sign in</a>
+        <section class="card slide-up text-center" style="padding: 4rem 2rem;">
+            <h2 class="mb-4">Ready to begin?</h2>
+            <p style="color: var(--text-muted); margin-bottom: 2rem; font-size: 1.1rem;">Join thousands of others
+                achieving their fitness goals.</p>
+            <div style="display: flex; gap: 1rem; justify-content: center;">
+                <a th:href="@{/register}" class="btn btn-primary">Create your account</a>
+                <a th:href="@{/login}" class="btn btn-outline">Sign in</a>
+            </div>
         </section>
     </main>
 </body>

@@ -1,100 +1,129 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
+
 <head th:replace="~{fragments/_header :: head}"></head>
+
 <body>
-<header th:replace="~{fragments/_header :: header}"></header>
+    <header th:replace="~{fragments/_header :: header}"></header>
 
-<main class="container">
-    <section class="card slide-up">
-        <h1 class="title">Your Dashboard</h1>
-        <p class="subtitle">Quick snapshot of your progress and recent activity.</p>
+    <main class="container">
+        <section class="card slide-up">
+            <div class="mb-4">
+                <h1>Your Dashboard</h1>
+                <p>Quick snapshot of your progress and recent activity.</p>
+            </div>
 
-        <div class="list-cards" style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));">
-            <div class="goal-card">
-                <h3>Total Goals</h3>
-                <p class="status" th:text="${goals.size()}">0</p>
+            <div class="list-cards">
+                <div class="goal-card">
+                    <h3>🎯 Total Goals</h3>
+                    <p class="status" th:text="${goals.size()}">0</p>
+                </div>
+                <div class="goal-card">
+                    <h3>⚡ Active Goals</h3>
+                    <p class="status" th:text="${activeGoalsCount}">0</p>
+                </div>
+                <div class="goal-card">
+                    <h3>✅ Completed</h3>
+                    <p class="status" th:text="${completedGoalsCount}">0</p>
+                </div>
+                <div class="goal-card">
+                    <h3>📋 Plans</h3>
+                    <p class="status" th:text="${plans.size()}">0</p>
+                </div>
+                <div class="goal-card">
+                    <h3>📝 Logs</h3>
+                    <p class="status" th:text="${logs.size()}">0</p>
+                </div>
             </div>
-            <div class="goal-card">
-                <h3>Active Goals</h3>
-                <p class="status" th:text="${activeGoalsCount}">0</p>
-            </div>
-            <div class="goal-card">
-                <h3>Completed Goals</h3>
-                <p class="status" th:text="${completedGoalsCount}">0</p>
-            </div>
-            <div class="goal-card">
-                <h3>Workout Plans</h3>
-                <p class="status" th:text="${plans.size()}">0</p>
-            </div>
-            <div class="goal-card">
-                <h3>Workout Logs</h3>
-                <p class="status" th:text="${logs.size()}">0</p>
-            </div>
-        </div>
-    </section>
+        </section>
 
-    <section class="card slide-up">
-        <div class="stagger" style="margin-bottom: .5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
-            <div>
-                <h2>Recent Activity</h2>
-                <p class="meta">Your 5 most recent workouts</p>
+        <section class="card slide-up">
+            <div class="stagger"
+                style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem;">
+                <div>
+                    <h2>Recent Activity</h2>
+                    <p class="mb-0" style="margin-bottom: 0;">Your 5 most recent workouts</p>
+                </div>
+                <div style="display: flex; gap: 0.5rem;">
+                    <a th:href="@{/logs/add}" class="btn btn-primary">Log Workout</a>
+                    <a th:href="@{/logs/history}" class="btn btn-outline">View History</a>
+                </div>
             </div>
-            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
-                <a th:href="@{/logs/add}" class="btn btn-primary" style="background: #10b981; color: #064e3b; font-weight: 600; text-decoration: none;">Log a Workout</a>
-                <a th:href="@{/logs/history}" class="btn btn-outline" style="text-decoration: none;">View all workouts</a>
-            </div>
-        </div>
-        <div th:if="${#lists.isEmpty(recentLogs)}" class="meta">No workouts logged yet.</div>
-        <table th:if="${!#lists.isEmpty(recentLogs)}">
-            <thead>
-            <tr>
-                <th>Date</th>
-                <th>Duration (min)</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="log : ${recentLogs}">
-                <td th:text="${log.date}">2025-01-01</td>
-                <td th:text="${log.durationMinutes}">30</td>
-            </tr>
-            </tbody>
-        </table>
-    </section>
 
-    <section class="card slide-up">
-        <div class="stagger" style="margin-bottom: .5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
-            <h2>Your Goals</h2>
-            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
-                <a th:href="@{/goals/add}" class="btn btn-primary" style="background: #10b981; color: #064e3b; font-weight: 600; text-decoration: none;">Add Goal</a>
-                <a th:href="@{/goals}" class="btn btn-outline" style="text-decoration: none;">View all goals</a>
-            </div>
-        </div>
-        <div class="list-cards">
-            <article class="goal-card" th:each="g : ${goals}">
-                <h3 th:text="${g.description}">Run 5k</h3>
-                <p class="meta">Target: <span th:text="${g.targetDate}"></span></p>
-                <p class="meta">Status: <span class="status" th:text="${g.isCompleted() ? 'Completed' : 'In Progress'}"></span></p>
-            </article>
-        </div>
-    </section>
+            <p th:if="${#lists.isEmpty(recentLogs)}" style="color: var(--text-muted); font-style: italic;">
+                No workouts logged yet. Start your journey today!
+            </p>
 
-    <section class="card slide-up">
-        <div class="stagger" style="margin-bottom: .5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
-            <h2>Your Plans</h2>
-            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
-                <a th:href="@{/workout-plans/add}" class="btn btn-primary" style="background: #10b981; color: #064e3b; font-weight: 600; text-decoration: none;">Create a Plan</a>
-                <a th:href="@{/workout-plans}" class="btn btn-outline" style="text-decoration: none;">View all plans</a>
+            <table th:if="${!#lists.isEmpty(recentLogs)}">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Duration (min)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="log : ${recentLogs}">
+                        <td th:text="${log.date}">2025-01-01</td>
+                        <td th:text="${log.durationMinutes}">30</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section class="card slide-up">
+            <div class="stagger"
+                style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem;">
+                <h2>Your Goals</h2>
+                <div style="display: flex; gap: 0.5rem;">
+                    <a th:href="@{/goals/add}" class="btn btn-primary">Add Goal</a>
+                    <a th:href="@{/goals}" class="btn btn-outline">View All</a>
+                </div>
             </div>
-        </div>
-        <div class="list-cards">
-            <article class="goal-card" th:each="p : ${plans}">
-                <h3 th:text="${p.name}">Plan Name</h3>
-                <p class="meta" th:text="${p.description}">Description</p>
-            </article>
-        </div>
-    </section>
-</main>
+
+            <p th:if="${#lists.isEmpty(goals)}" style="color: var(--text-muted); font-style: italic;">
+                No goals set yet. Challenge yourself!
+            </p>
+
+            <div class="list-cards" th:if="${!#lists.isEmpty(goals)}">
+                <article class="goal-card" th:each="g : ${goals}">
+                    <h3 th:text="${g.description}">Run 5k</h3>
+                    <p class="meta">Target: <span th:text="${g.targetDate}"></span></p>
+                    <div class="mt-4">
+                        <span th:if="${g.isCompleted()}"
+                            style="color: var(--success-text); font-weight: 600; display: inline-flex; align-items: center; gap: 0.25rem;">
+                            <span>✓</span> Completed
+                        </span>
+                        <span th:unless="${g.isCompleted()}"
+                            style="color: var(--accent-color); font-weight: 600; display: inline-flex; align-items: center; gap: 0.25rem;">
+                            <span>⟳</span> In Progress
+                        </span>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <section class="card slide-up">
+            <div class="stagger"
+                style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem;">
+                <h2>Your Plans</h2>
+                <div style="display: flex; gap: 0.5rem;">
+                    <a th:href="@{/workout-plans/add}" class="btn btn-primary">Create Plan</a>
+                    <a th:href="@{/workout-plans}" class="btn btn-outline">View All</a>
+                </div>
+            </div>
+
+            <p th:if="${#lists.isEmpty(plans)}" style="color: var(--text-muted); font-style: italic;">
+                No workout plans created yet.
+            </p>
+
+            <div class="list-cards" th:if="${!#lists.isEmpty(plans)}">
+                <article class="goal-card" th:each="p : ${plans}">
+                    <h3 th:text="${p.name}">Plan Name</h3>
+                    <p class="meta" th:text="${p.description}">Description</p>
+                </article>
+            </div>
+        </section>
+    </main>
 </body>
+
 </html>
-
-

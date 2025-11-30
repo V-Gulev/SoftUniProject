@@ -7,8 +7,11 @@
     <header th:replace="~{fragments/_header :: header}"></header>
 
     <main class="container">
-        <div class="card slide-up">
-            <h1>Welcome back</h1>
+        <div class="card slide-up" style="max-width: 480px; margin: 4rem auto;">
+            <div class="text-center mb-4">
+                <h1>Welcome back</h1>
+                <p>Sign in to continue your fitness journey</p>
+            </div>
 
             <div th:if="${registrationSuccess}" class="alert alert-success" th:text="${registrationSuccess}"></div>
             <div th:if="${errorMessage != null}" class="alert alert-error" th:text="${errorMessage}"></div>
@@ -28,24 +31,30 @@
                     <label for="password">Password</label>
                     <input type="password" id="password" name="password" placeholder="••••••••">
                 </div>
-                <div style="display: flex; gap: 0.5rem;">
-                    <button type="submit" class="btn btn-primary">Sign in</button>
-                    <a th:href="@{/register}" class="btn btn-outline" style="margin-left: .5rem;">Create account</a>
+
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Sign in</button>
+
+                <div class="text-center mt-4">
+                    <p class="mb-2">Don't have an account?</p>
+                    <a th:href="@{/register}" class="btn btn-outline" style="width: 100%;">Create account</a>
                 </div>
-                <div style="margin-top: 1rem; text-align: center;">
-                    <p>Or</p>
-                    <a href="/oauth2/authorization/google" class="btn btn-outline"
-                        style="width: 100%; display: inline-block;">
-                        Sign in with Google
-                    </a>
-                    <a href="/oauth2/authorization/github" class="btn btn-outline"
-                        style="width: 100%; display: inline-block; margin-top: 0.5rem;">
-                        Sign in with GitHub
-                    </a>
-                    <a href="/oauth2/authorization/facebook" class="btn btn-outline"
-                        style="width: 100%; display: inline-block; margin-top: 0.5rem;">
-                        Sign in with Facebook
-                    </a>
+
+                <div style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border-color);">
+                    <p class="text-center mb-4" style="font-size: 0.9rem;">Or continue with</p>
+                    <div style="display: grid; gap: 0.75rem;">
+                        <a href="/oauth2/authorization/google" class="btn btn-outline"
+                            style="width: 100%; justify-content: center;">
+                            <span style="font-size: 1.1rem;">G</span> Google
+                        </a>
+                        <a href="/oauth2/authorization/github" class="btn btn-outline"
+                            style="width: 100%; justify-content: center;">
+                            <span style="font-size: 1.1rem;">gh</span> GitHub
+                        </a>
+                        <a href="/oauth2/authorization/facebook" class="btn btn-outline"
+                            style="width: 100%; justify-content: center;">
+                            <span style="font-size: 1.1rem;">f</span> Facebook
+                        </a>
+                    </div>
                 </div>
             </form>
         </div>

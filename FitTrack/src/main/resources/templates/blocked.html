@@ -1,21 +1,25 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
+
 <head th:replace="~{fragments/_header :: head}"></head>
+
 <body>
-<header th:replace="~{fragments/_header :: header}"></header>
-<main class="container">
-    <div class="card slide-up">
-        <h1 style="color: #ffffff; font-size: 2rem; text-align: center;">Account Blocked</h1>
-        <p style="color: var(--text-muted); font-size: 1rem; text-align: center;">
-            Your account has been blocked by an administrator.
-        </p>
-        <p style="color: var(--text-muted); font-size: 1rem; text-align: center;">
-            Please contact support for further assistance.
-        </p>
-        <div style="text-align: center; margin-top: 2rem;">
-            <a th:href="@{/}" class="btn btn-primary">Go to Homepage</a>
+    <header th:replace="~{fragments/_header :: header}"></header>
+    <main class="container">
+        <div class="card slide-up text-center" style="max-width: 600px; margin: 4rem auto; padding: 3rem;">
+            <div style="font-size: 4rem; margin-bottom: 1.5rem;">🚫</div>
+            <h1 class="mb-4">Account Blocked</h1>
+            <p style="color: var(--text-muted); font-size: 1.1rem; margin-bottom: 0.5rem;">
+                Your account has been blocked by an administrator.
+            </p>
+            <p style="color: var(--text-muted); font-size: 1.1rem; margin-bottom: 2rem;">
+                Please contact support for further assistance.
+            </p>
+            <div>
+                <a th:href="@{/}" class="btn btn-primary">Go to Homepage</a>
+            </div>
         </div>
-    </div>
-</main>
+    </main>
 </body>
+
 </html>
