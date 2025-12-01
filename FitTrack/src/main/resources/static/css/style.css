@@ -181,7 +181,8 @@ form input[type="email"],
 form input[type="password"],
 form input[type="date"],
 form input[type="number"],
-form textarea {
+form textarea,
+form select {
     padding: 0.75rem 1rem;
     background: var(--bg-body);
     color: var(--text-main);
@@ -198,10 +199,16 @@ form textarea::placeholder {
 }
 
 form input:focus,
-form textarea:focus {
+form textarea:focus,
+form select:focus {
     outline: none;
     border-color: var(--primary-color);
     box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.15);
+}
+
+form select option {
+    background-color: var(--bg-surface);
+    color: var(--text-main);
 }
 
 .btn {
