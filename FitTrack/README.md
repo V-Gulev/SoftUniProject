@@ -49,3 +49,14 @@ The main application integrates with an external **`badge-service`** microservic
 - **Award a Badge:** When a user achieves a milestone (e.g., creates their first goal, completes 10 workouts), the main application calls the `badge-service` via a `POST` request to award a new badge.
 - **Revoke a Badge:** Admins (or users, depending on UI) can trigger a `DELETE` request to the `badge-service` to remove a badge.
 - **View Badges:** The user's profile page makes a `GET` request to the `badge-service` to fetch and display all earned badges.
+
+## Bonus Features
+
+### AI Integration
+- **Spring AI with Google Gemini:** Implemented an AI-powered chatbot using Spring AI and the Google Gemini LLM to provide fitness advice and answer user queries.
+
+### Enhanced Security & Authentication
+- **OAuth2 Integration:** Implemented social login functionality allowing users to sign in using their existing accounts from:
+    - **Google**
+    - **Facebook**
+    - **GitHub**
