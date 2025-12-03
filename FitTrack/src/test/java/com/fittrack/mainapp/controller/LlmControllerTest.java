@@ -53,55 +53,58 @@ class LlmControllerTest {
         when(llmService.chat(userMessage)).thenReturn(aiResponse);
 
         mockMvc.perform(post("/api/llm/chat")
-                        .with(csrf())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(payload)))
+                .with(csrf())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(payload)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.response").value(aiResponse));
     }
 
     @Test
     @WithMockUser
-    void chat_ShouldReturnGenericError_WhenUnknownExceptionOccurs() throws Exception {
+    void chat_ShouldReturnGenericError_WhenServiceReturnsError() throws Exception {
         Map<String, String> payload = Map.of("message", "Trigger Error");
+        String errorMessage = "I'm sorry, I encountered an error processing your request.";
 
-        when(llmService.chat(anyString())).thenThrow(new RuntimeException("Random database error"));
+        when(llmService.chat(anyString())).thenReturn(errorMessage);
 
         mockMvc.perform(post("/api/llm/chat")
-                        .with(csrf())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(payload)))
+                .with(csrf())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(payload)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.response").value("I'm sorry, I encountered an error processing your request."));
+                .andExpect(jsonPath("$.response").value(errorMessage));
     }
 
     @Test
     @WithMockUser
-    void chat_ShouldReturnQuotaError_WhenQuotaExceeded() throws Exception {
+    void chat_ShouldReturnQuotaError_WhenServiceReturnsQuotaError() throws Exception {
         Map<String, String> payload = Map.of("message", "Expensive Request");
+        String errorMessage = "I'm sorry, the OpenAI API quota has been exceeded. Please check your billing details.";
 
-        when(llmService.chat(anyString())).thenThrow(new RuntimeException("Error: insufficient_quota for this key"));
+        when(llmService.chat(anyString())).thenReturn(errorMessage);
 
         mockMvc.perform(post("/api/llm/chat")
-                        .with(csrf())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(payload)))
+                .with(csrf())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(payload)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.response").value("I'm sorry, the OpenAI API quota has been exceeded. Please check your billing details."));
+                .andExpect(jsonPath("$.response").value(errorMessage));
     }
 
     @Test
     @WithMockUser
-    void chat_ShouldReturnRateLimitError_When429Occurs() throws Exception {
+    void chat_ShouldReturnRateLimitError_WhenServiceReturnsRateLimitError() throws Exception {
         Map<String, String> payload = Map.of("message", "Too Fast");
+        String errorMessage = "I'm sorry, I'm receiving too many requests right now. Please try again later.";
 
-        when(llmService.chat(anyString())).thenThrow(new RuntimeException("Server returned HTTP response code: 429"));
+        when(llmService.chat(anyString())).thenReturn(errorMessage);
 
         mockMvc.perform(post("/api/llm/chat")
-                        .with(csrf())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(payload)))
+                .with(csrf())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(payload)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.response").value("I'm sorry, I'm receiving too many requests right now. Please try again later."));
+                .andExpect(jsonPath("$.response").value(errorMessage));
     }
 }
