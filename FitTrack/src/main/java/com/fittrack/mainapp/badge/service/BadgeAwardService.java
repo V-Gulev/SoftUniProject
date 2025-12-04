@@ -54,14 +54,11 @@ public class BadgeAwardService {
 
         BadgeDto awardedBadge = null;
 
-        if (completedGoals == 1) {
-            awardedBadge = awardBadgeIfNotExists(userId, "First Goal Completed", "/images/FirstGoalCompleted.png");
-        } else if (completedGoals == 5) {
-            awardedBadge = awardBadgeIfNotExists(userId, "Goal Master", "/images/GoalMaster.png");
-        } else if (completedGoals == 10) {
-            awardedBadge = awardBadgeIfNotExists(userId, "Goal Champion", "/images/GoalChampion.png");
-        } else if (completedGoals == 25) {
-            awardedBadge = awardBadgeIfNotExists(userId, "Goal Legend", "/images/GoalLegend.png");
+        switch (completedGoals) {
+            case 1 -> awardedBadge = awardBadgeIfNotExists(userId, "First Goal Completed", "/images/FirstGoalCompleted.png");
+            case 5 -> awardedBadge = awardBadgeIfNotExists(userId, "Goal Master", "/images/GoalMaster.png");
+            case 10 -> awardedBadge = awardBadgeIfNotExists(userId, "Goal Champion", "/images/GoalChampion.png");
+            case 25 -> awardedBadge = awardBadgeIfNotExists(userId, "Goal Legend", "/images/GoalLegend.png");
         }
 
         return awardedBadge;
@@ -70,14 +67,11 @@ public class BadgeAwardService {
     public BadgeDto checkWorkoutBadges(UUID userId, int totalWorkouts) {
         BadgeDto awardedBadge = null;
 
-        if (totalWorkouts == 1) {
-            awardedBadge = awardBadgeIfNotExists(userId, "First Workout", "/images/FirstWorkout.png");
-        }else if (totalWorkouts == 10) {
-            awardedBadge = awardBadgeIfNotExists(userId, "Workout Beginner", "/images/WorkoutBeginner.png");
-        }else if (totalWorkouts == 50) {
-            awardedBadge = awardBadgeIfNotExists(userId, "Workout Warrior", "/images/WorkoutWarrior.png");
-        }else if (totalWorkouts == 100) {
-            awardedBadge = awardBadgeIfNotExists(userId, "Workout Champion", "/images/WorkoutChampion.png");
+        switch (totalWorkouts) {
+            case 1 -> awardedBadge = awardBadgeIfNotExists(userId, "First Workout", "/images/FirstWorkout.png");
+            case 10 -> awardedBadge = awardBadgeIfNotExists(userId, "Workout Beginner", "/images/WorkoutBeginner.png");
+            case 50 -> awardedBadge = awardBadgeIfNotExists(userId, "Workout Warrior", "/images/WorkoutWarrior.png");
+            case 100 -> awardedBadge = awardBadgeIfNotExists(userId, "Workout Champion", "/images/WorkoutChampion.png");
         }
 
         return awardedBadge;
