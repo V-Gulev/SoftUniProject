@@ -13,6 +13,7 @@ import java.util.UUID;
 
 @Repository
 public interface GoalRepository extends JpaRepository<Goal, UUID> {
+
     List<Goal> findByUser(User user);
 
     Optional<Goal> findByIdAndUser(UUID id, User user);

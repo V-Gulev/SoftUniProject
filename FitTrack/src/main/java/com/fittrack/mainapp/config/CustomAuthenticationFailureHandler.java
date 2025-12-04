@@ -11,6 +11,7 @@ import org.springframework.security.web.authentication.AuthenticationFailureHand
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
 @Component
@@ -28,7 +29,7 @@ public class CustomAuthenticationFailureHandler implements AuthenticationFailure
             redirectUrl = "/blocked";
             LOGGER.warn("Blocked user login attempt: {}", username);
         } else if (username != null) {
-            redirectUrl += "?username=" + java.net.URLEncoder.encode(username, StandardCharsets.UTF_8);
+            redirectUrl += "?username=" + URLEncoder.encode(username, StandardCharsets.UTF_8);
             LOGGER.debug("Failed login attempt for user: {}", username);
         }
 
